@@ -42,6 +42,7 @@ public abstract class Application implements Runnable {
     
     public void onEvent(Event event){
         Log.coreInfo(event);
+        if(event instanceof WindowClosedEvent) this.running = false;
     }
     
     

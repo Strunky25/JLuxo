@@ -6,6 +6,10 @@ package platform.windows;
 
 import luxo.Log;
 import luxo.Window;
+import luxo.events.ApplicationEvent.*;
+import luxo.events.KeyEvent;
+import luxo.events.KeyEvent.*;
+import luxo.events.MouseEvent.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.jni.JNINativeInterface;
 import static org.lwjgl.glfw.GLFW.*;
@@ -57,6 +61,47 @@ public class WindowsWindow extends Window {
         long dataPointer = JNINativeInterface.NewGlobalRef(data);
         glfwSetWindowUserPointer(window, dataPointer);
         setVSync(true);
+        
+        glfwSetWindowSizeCallback(window, (long win, int width, int height) -> {
+           WindowResizedEvent event = new WindowResizedEvent(width, height);
+           data.width = width;
+           data.height = height;
+           data.eventCallback.callback(event);
+        });
+        
+        glfwSetWindowCloseCallback(window, (long win) -> {
+           WindowClosedEvent event = new WindowClosedEvent();
+           data.eventCallback.callback(event);
+        });
+        
+        glfwSetKeyCallback(window, (long win, int key, int scancode, int action, int modes) -> {
+           KeyEvent event = null;
+           switch(action){
+               case GLFW_PRESS -> event = new KeyPressedEvent(key, 0);
+               case GLFW_RELEASE -> event = new KeyReleasedEvent(key);
+               case GLFW_REPEAT -> event = new KeyPressedEvent(key, 1);
+           }
+           data.eventCallback.callback(event);
+        });
+        
+        glfwSetMouseButtonCallback(window, (long win, int button, int action, int modes) -> {
+           MouseButtonEvent event = null;
+           switch(action){
+               case GLFW_PRESS -> event = new MouseButtonPressedEvent(button);
+               case GLFW_RELEASE -> event = new MouseButtonReleasedEvent(button);
+           }
+           data.eventCallback.callback(event);
+        });
+        
+        glfwSetScrollCallback(window, (long win, double xOffset, double yOffset) -> {
+           MouseScrolledEvent event = new MouseScrolledEvent((float) xOffset, (float) yOffset);           
+           data.eventCallback.callback(event);
+        });
+        
+        glfwSetCursorPosCallback(window, (long win, double xPos, double yPos) -> {
+           MouseMovedEvent event = new MouseMovedEvent((float) xPos, (float) yPos);           
+           data.eventCallback.callback(event);
+        });
     }
     
     @Override
