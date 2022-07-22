@@ -1,6 +1,8 @@
 
 package luxo;
 
+import luxo.events.ApplicationEvent.*;
+
 
 public abstract class Application implements Runnable {
     
@@ -19,6 +21,8 @@ public abstract class Application implements Runnable {
     
     @Override
     public void run() {
+        WindowResizedEvent event = new WindowResizedEvent(1280, 720);
+        Log.trace(event);
         while (running) {}
     }  
     
