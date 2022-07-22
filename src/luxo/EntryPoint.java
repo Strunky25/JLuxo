@@ -2,19 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package luxo.java;
+package luxo;
+
+import sandbox.Sandbox;
 
 /**
  *
  * @author elsho
  */
-public class LuxoJava {
+public class EntryPoint {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+
+    public static void main(String[] args) {     
+        Application app = new Sandbox();
+        app.run();
     }
     
 }
