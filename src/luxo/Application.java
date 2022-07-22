@@ -8,8 +8,8 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import org.lwjgl.opengl.GL;
-import platform.windows.WindowsWindow;
 import static org.lwjgl.opengl.GL11.*;
+import platform.windows.WindowsWindow;
 
 /**
  *
@@ -21,6 +21,7 @@ public abstract class Application implements Runnable {
     
     private boolean running;
     protected final Window window;
+    private final LayerStack layerStack;
     
     public Application() {
         assert app == null : "Application already exists!";
@@ -28,6 +29,7 @@ public abstract class Application implements Runnable {
         running = true;
         window = new WindowsWindow(new WindowProperties());
         window.setEventCallback(this::onEvent);
+        layerStack = new LayerStack();
     }
     
     @Override
@@ -36,15 +38,25 @@ public abstract class Application implements Runnable {
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
         while (running) {
             glClear(GL_COLOR_BUFFER_BIT);
+            layerStack.onUpdate();
             window.onUpdate();
         }
     }  
     
     public void onEvent(Event event){
-        Log.coreInfo(event);
-        if(event instanceof WindowClosedEvent) this.running = false;
+        if(event instanceof WindowClosedEvent) running = false;
+        layerStack.onEvent(event);
     }
     
+    public void pushLayer(Layer layer){
+        layerStack.pushLayer(layer);
+        layer.onAttach();
+    }
+    
+    public void pushOverlay(Layer overlay){
+        layerStack.pushLayer(overlay);
+        overlay.onAttach();
+    }
     
     public Window getWindow() { return this.window; }
     
