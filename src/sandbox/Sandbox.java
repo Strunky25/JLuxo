@@ -8,6 +8,7 @@ import luxo.Application;
 import luxo.Layer;
 import luxo.Log;
 import luxo.events.Event;
+import luxo.imgui.ImGuiLayer;
 
 /**
  *
@@ -41,7 +42,11 @@ public class Sandbox extends Application {
     
     public Sandbox() {
         super();
-        pushLayer(new ExampleLayer());
+        init();
+    }
+    
+    private void init() {
+        pushOverlay(new ImGuiLayer(window.getPointer()));
     }
     
     
