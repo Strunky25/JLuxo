@@ -13,7 +13,10 @@ import sandbox.Sandbox;
 public class EntryPoint {
 
 
-    public static void main(String[] args) {     
+    public static void main(String[] args) {    
+        Log.coreWarn("Initialized Log!");
+        Log.info("Hello! var=%d", 5);
+        
         Application app = new Sandbox();
         app.run();
     }
