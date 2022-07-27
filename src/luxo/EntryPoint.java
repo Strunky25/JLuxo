@@ -4,6 +4,7 @@
  */
 package luxo;
 
+import platform.windows.WindowsInput;
 import sandbox.Sandbox;
 
 /**
@@ -14,6 +15,8 @@ public class EntryPoint {
 
 
     public static void main(String[] args) {    
+        /* Initialization */
+        WindowsInput.loadInstance();
         Log.coreWarn("Initialized Log!");
         
         Application app = new Sandbox();

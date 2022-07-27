@@ -44,7 +44,7 @@ public class Log {
     
     /* Core Log Methods */
     public static void coreTrace(String txt, Object... args) {
-        System.out.println(BLUE + format(CORE, txt, args) + RESET);
+        System.out.println(format(CORE, txt, args));
     }
     
     public static void coreInfo(String txt, Object... args) {
@@ -63,7 +63,7 @@ public class Log {
     }
     
     public static void coreTrace(Object obj, Object... args) {
-        System.out.println(BLUE + format(CORE, obj.toString(), args) + RESET);
+        System.out.println(format(CORE, obj.toString(), args));
     }
     
     public static void coreInfo(Object obj, Object... args) {
@@ -83,7 +83,7 @@ public class Log {
     
     /* Client Log Methods */
     public static void trace(String txt, Object... args) {
-        System.out.println(BLUE + format(CLIENT, txt, args) + RESET);
+        System.out.println(format(CLIENT, txt, args));
     }
     
     public static void info(String txt, Object... args) {
@@ -102,7 +102,7 @@ public class Log {
     }
     
     public static void trace(Object obj, Object... args) {
-        System.out.println(BLUE + format(CLIENT, obj.toString(), args) + RESET);
+        System.out.println(format(CLIENT, obj.toString(), args));
     }
     
     public static void info(Object obj, Object... args) {

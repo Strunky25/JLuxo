@@ -5,10 +5,12 @@
 package sandbox;
 
 import luxo.Application;
+import luxo.Input;
+import static luxo.KeyCode.LX_KEY_TAB;
 import luxo.Layer;
 import luxo.Log;
 import luxo.events.Event;
-import luxo.imgui.ImGuiLayer;
+import luxo.events.KeyEvent.KeyPressedEvent;
 
 /**
  *
@@ -30,12 +32,21 @@ public class Sandbox extends Application {
 
         @Override
         public void onUpdate() {
-            Log.info("ExampleLayer::Update");
+            if(Input.isKeyPressed(LX_KEY_TAB))
+                Log.info("Tab key is pressed!");
         }
 
         @Override
         public void onEvent(Event event) {
-            Log.trace(event);
+            if(event.getType() == Event.Type.KeyPressed) {
+                KeyPressedEvent evt = (KeyPressedEvent) event;
+                Log.trace((char) evt.getKeyCode());
+            }
+        }
+
+        @Override
+        public void onImGuiRender() {
+            
         }
         
     }
@@ -46,7 +57,7 @@ public class Sandbox extends Application {
     }
     
     private void init() {
-        pushOverlay(new ImGuiLayer(window.getPointer()));
+        pushLayer(new ExampleLayer());
     }
     
     

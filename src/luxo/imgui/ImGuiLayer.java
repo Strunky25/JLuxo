@@ -7,9 +7,11 @@ package luxo.imgui;
 import luxo.Layer;
 import luxo.events.Event;
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import luxo.Application;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
@@ -35,6 +37,13 @@ public class ImGuiLayer extends Layer {
         ImGui.createContext();
         ImGui.styleColorsDark();
         
+        final ImGuiIO io = ImGui.getIO();
+        io.setIniFilename(null);                                // We don't want to save .ini file
+        io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);  // Enable Keyboard Controls
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);      // Enable Docking
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);    // Enable Multi-Viewport / Platform Windows
+        io.setConfigViewportsNoTaskBarIcon(true);
+        
         implGLFW.init(window, true);
         GL.createCapabilities();
         implOpenGL.init("#version 410");
@@ -42,21 +51,29 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onDetach() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        implOpenGL.dispose();
+        implGLFW.dispose();
+        ImGui.destroyContext();
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate() {}
+    
+    public void begin() {
         /* Start Frame */
         implGLFW.newFrame();
         ImGui.newFrame();
-        
-        /* Process */
-        ImGui.showDemoWindow();
-        
+    }
+    
+    public void end() {
         /* End Frame */
+        ImGuiIO io = ImGui.getIO();
+        Application app = Application.get();
+        io.setDisplaySize(app.getWindow().getWidth(), app.getWindow().getHeight());
+        
         ImGui.render();
         implOpenGL.renderDrawData(ImGui.getDrawData());
+        
         if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
             final long backupWindowPtr = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();
@@ -64,11 +81,12 @@ public class ImGuiLayer extends Layer {
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
     }
+    
+    @Override
+    public void onImGuiRender() {
+        ImGui.showDemoWindow();
+    }
 
     @Override
-    public void onEvent(Event event) {
-        
-    }
-    
-    
+    public void onEvent(Event event) {}
 }

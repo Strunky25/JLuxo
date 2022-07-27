@@ -33,6 +33,8 @@ public class LayerStack {
     public void popOverlay(Layer overlay) { layers.remove(overlay); }
     
     public void onUpdate() { layers.forEach(((layer) -> layer.onUpdate())); }
+    
+    public void onImGuiRender() { layers.forEach(((layer) -> layer.onImGuiRender())); } 
 
     void onEvent(Event event) {
         for(Layer layer: layers) {

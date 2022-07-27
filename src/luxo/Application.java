@@ -7,6 +7,7 @@ package luxo;
 import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
+import luxo.imgui.ImGuiLayer;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL11.*;
 import platform.windows.WindowsWindow;
@@ -21,6 +22,7 @@ public abstract class Application implements Runnable {
     
     private boolean running;
     protected final Window window;
+    private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
     
     public Application() {
@@ -30,6 +32,8 @@ public abstract class Application implements Runnable {
         window = new WindowsWindow(new WindowProperties());
         window.setEventCallback(this::onEvent);
         layerStack = new LayerStack();
+        imGuiLayer = new ImGuiLayer(window.getPointer());
+        pushOverlay(imGuiLayer);
     }
     
     @Override
@@ -39,6 +43,11 @@ public abstract class Application implements Runnable {
         while (running) {
             glClear(GL_COLOR_BUFFER_BIT);
             layerStack.onUpdate();
+            
+            imGuiLayer.begin();
+            layerStack.onImGuiRender();
+            imGuiLayer.end();
+            
             window.onUpdate();
         }
     }  
@@ -48,12 +57,12 @@ public abstract class Application implements Runnable {
         layerStack.onEvent(event);
     }
     
-    public void pushLayer(Layer layer){
+    public final void pushLayer(Layer layer){
         layerStack.pushLayer(layer);
         layer.onAttach();
     }
     
-    public void pushOverlay(Layer overlay){
+    public final void pushOverlay(Layer overlay){
         layerStack.pushLayer(overlay);
         overlay.onAttach();
     }
