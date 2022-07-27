@@ -1,7 +1,7 @@
-package Luxo;
+package luxo;
 
-import Sandbox.Sandbox;
-import Platform.Windows.WindowsInput;
+import sandbox.Sandbox;
+import platform.windows.WindowsInput;
 
 public class EntryPoint {
 

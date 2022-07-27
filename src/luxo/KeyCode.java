@@ -1,4 +1,4 @@
-package Luxo;
+package luxo;
 
 public class KeyCode {
     

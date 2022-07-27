@@ -1,4 +1,4 @@
-package Luxo;
+package luxo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +19,7 @@ Format  Data Type                                       Output
     %t	Date/Time (incl. long, Calendar, Date and TemporalAccessor)	%t is the prefix for Date/Time conversions. More formatting flags are needed after this. See Date/Time conversion below.
     %x	integer (incl. byte, short, int, long, bigint)	Hex string.
 */
+
 public class Log {
     
     private static final String CORE = "LUXO";

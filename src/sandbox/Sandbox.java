@@ -1,13 +1,21 @@
-package Sandbox;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package sandbox;
 
-import Luxo.Application;
-import Luxo.Layer;
-import Luxo.Events.Event;
-import Luxo.Events.KeyEvent.KeyPressedEvent;
-import Luxo.Input;
-import Luxo.Log;
-import static Luxo.KeyCode.*;
+import luxo.Application;
+import luxo.Input;
+import static luxo.KeyCode.LX_KEY_TAB;
+import luxo.Layer;
+import luxo.Log;
+import luxo.events.Event;
+import luxo.events.KeyEvent.KeyPressedEvent;
 
+/**
+ *
+ * @author elsho
+ */
 public class Sandbox extends Application {
 
     public static class ExampleLayer extends Layer {

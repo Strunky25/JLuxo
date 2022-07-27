@@ -1,4 +1,4 @@
-package Luxo;
+package luxo;
 
 public abstract class Input {
     

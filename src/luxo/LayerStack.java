@@ -1,6 +1,6 @@
-package Luxo;
+package luxo;
 
-import Luxo.Events.Event;
+import luxo.events.Event;
 import java.util.ArrayList;
 
 public class LayerStack {

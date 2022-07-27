@@ -1,9 +1,10 @@
-package Luxo;
+package luxo;
 
-import Luxo.Events.Event;
-import Luxo.Events.ApplicationEvent.WindowClosedEvent;
-import Luxo.ImGui.ImGuiLayer;
-import Platform.Windows.WindowsWindow;
+import luxo.Window.WindowProperties;
+import luxo.events.ApplicationEvent.WindowClosedEvent;
+import luxo.events.Event;
+import luxo.imgui.ImGuiLayer;
+import platform.windows.WindowsWindow;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -20,7 +21,7 @@ public abstract class Application implements Runnable {
         assert app == null : "Application already exists!";
         app = this;
         running = true;
-        window = new WindowsWindow(new Window.WindowProperties());
+        window = new WindowsWindow(new WindowProperties());
         window.setEventCallback(this::onEvent);
         layerStack = new LayerStack();
         imGuiLayer = new ImGuiLayer(window.getPointer());

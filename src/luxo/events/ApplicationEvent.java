@@ -1,4 +1,4 @@
-package Luxo.Events;
+package luxo.events;
 
 public abstract class ApplicationEvent extends Event {
     
@@ -96,3 +96,4 @@ public abstract class ApplicationEvent extends Event {
         }    
     }
 }
+

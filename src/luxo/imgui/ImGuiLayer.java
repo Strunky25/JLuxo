@@ -1,8 +1,8 @@
-package Luxo.ImGui;
+package luxo.imgui;
 
-import Luxo.Application;
-import Luxo.Events.Event;
-import Luxo.Layer;
+import luxo.Application;
+import luxo.events.Event;
+import luxo.Layer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;

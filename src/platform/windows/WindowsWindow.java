@@ -1,15 +1,15 @@
-package Platform.Windows;
+package platform.windows;
 
-import Luxo.Log;
-import Luxo.Window;
-import Luxo.Events.ApplicationEvent.*;
-import Luxo.Events.KeyEvent;
-import Luxo.Events.KeyEvent.*;
-import Luxo.Events.MouseEvent.*;
-import org.lwjgl.glfw.GLFW;
+import luxo.Log;
+import luxo.Window;
+import luxo.events.ApplicationEvent.*;
+import luxo.events.KeyEvent;
+import luxo.events.KeyEvent.*;
+import luxo.events.MouseEvent.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.system.jni.JNINativeInterface;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import org.lwjgl.system.jni.JNINativeInterface;
 
 public class WindowsWindow extends Window {
     

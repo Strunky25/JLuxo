@@ -1,4 +1,4 @@
-package Luxo.Events;
+package luxo.events;
 
 public abstract class MouseEvent extends Event {
 
