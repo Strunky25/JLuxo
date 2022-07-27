@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package platform.windows;
+package Platform.Windows;
 
-import luxo.Application;
-import luxo.Input;
+import Luxo.Application;
+import Luxo.Input;
 import static org.lwjgl.glfw.GLFW.*;
 
-/**
- *
- * @author elsho
- */
 public class WindowsInput extends Input {
     
     public static void loadInstance() {

@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package luxo.events;
+package Luxo.Events;
 
-/**
- *
- * @author elsho
- */
 public abstract class MouseEvent extends Event {
 
     @Override

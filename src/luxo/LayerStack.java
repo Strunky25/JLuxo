@@ -1,16 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package luxo;
+package Luxo;
 
+import Luxo.Events.Event;
 import java.util.ArrayList;
-import luxo.events.Event;
 
-/**
- *
- * @author elsho
- */
 public class LayerStack {
     
     private final ArrayList<Layer> layers;

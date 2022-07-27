@@ -1,24 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package luxo.imgui;
+package Luxo.ImGui;
 
-import luxo.Layer;
-import luxo.events.Event;
+import Luxo.Application;
+import Luxo.Events.Event;
+import Luxo.Layer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import luxo.Application;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
-/**
- *
- * @author elsho
- */
 public class ImGuiLayer extends Layer {
     
     private final ImGuiImplGlfw implGLFW;

@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package luxo;
+package Luxo;
 
-import luxo.events.Event;
+import Luxo.Events.Event;
 
-/**
- *
- * @author elsho
- */
 public abstract class Window {
     
     public static class WindowProperties {
@@ -47,3 +39,4 @@ public abstract class Window {
     
     public abstract long getPointer();
 }
+
