@@ -6,10 +6,12 @@ import luxo.events.ApplicationEvent.*;
 import luxo.events.KeyEvent;
 import luxo.events.KeyEvent.*;
 import luxo.events.MouseEvent.*;
+import luxo.renderer.GraphicsContext;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.jni.JNINativeInterface;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import platform.opengl.OpenGLContext;
 
 public class WindowsWindow extends Window {
     
@@ -17,6 +19,7 @@ public class WindowsWindow extends Window {
     
     private long window;
     private final WindowData data;
+    private GraphicsContext context;
     
     public static class WindowData {
         String title;
@@ -49,7 +52,10 @@ public class WindowsWindow extends Window {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
         assert window != NULL : "Failed to create GLFW Window!";
-        glfwMakeContextCurrent(window);
+        
+        context = new OpenGLContext(window);
+        context.init();
+        
         long dataPointer = JNINativeInterface.NewGlobalRef(data);
         glfwSetWindowUserPointer(window, dataPointer);
         setVSync(true);
@@ -99,7 +105,7 @@ public class WindowsWindow extends Window {
     @Override
     public void onUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(window);
+        context.swapBuffers();
     }
 
     @Override
@@ -122,9 +128,7 @@ public class WindowsWindow extends Window {
         return new WindowsWindow(properties);
     }
     
-    public void dispose() {
-        
-    }
+    public void dispose() {}
     
     private static void GLFWErrorCallback(int error, long description) {
         Log.coreError("GLFW Error (%d): %s", error, description);
