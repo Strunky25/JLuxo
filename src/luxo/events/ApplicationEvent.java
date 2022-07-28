@@ -12,7 +12,6 @@ public abstract class ApplicationEvent extends Event {
         private final int width, height;
         
         public WindowResizedEvent(int width, int height) {
-            super();
             this.width = width;
             this.height = height;
         }
@@ -30,10 +29,6 @@ public abstract class ApplicationEvent extends Event {
     
     public static class WindowClosedEvent extends ApplicationEvent {
         
-        public WindowClosedEvent() {
-            super();
-        }
-
         @Override
         public ApplicationEvent.Type getType() {
             return ApplicationEvent.Type.WindowClosed;
@@ -47,10 +42,6 @@ public abstract class ApplicationEvent extends Event {
     
     public static class AppTickEvent extends ApplicationEvent {
         
-        public AppTickEvent() {
-            super();
-        }
-
         @Override
         public ApplicationEvent.Type getType() {
             return ApplicationEvent.Type.AppTick;
@@ -64,10 +55,6 @@ public abstract class ApplicationEvent extends Event {
     
     public static class AppUpdateEvent extends ApplicationEvent {
         
-        public AppUpdateEvent() {
-            super();
-        }
-
         @Override
         public ApplicationEvent.Type getType() {
             return ApplicationEvent.Type.AppUpdate;
@@ -81,10 +68,6 @@ public abstract class ApplicationEvent extends Event {
     
     public static class AppRenderEvent extends ApplicationEvent {
         
-        public AppRenderEvent() {
-            super();
-        }
-
         @Override
         public ApplicationEvent.Type getType() {
             return ApplicationEvent.Type.AppRender;

@@ -45,14 +45,10 @@ public class Sandbox extends Application {
         }
 
         @Override
-        public void onImGuiRender() {
-            
-        }
-        
+        public void onImGuiRender() {} 
     }
     
     public Sandbox() {
-        super();
         init();
     }
     

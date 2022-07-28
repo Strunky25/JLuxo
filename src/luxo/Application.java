@@ -4,6 +4,8 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
+import luxo.renderer.Buffer.IndexBuffer;
+import luxo.renderer.Buffer.VertexBuffer;
 import luxo.renderer.Shader;
 import platform.windows.WindowsWindow;
 import org.lwjgl.opengl.GL;
@@ -18,10 +20,12 @@ public abstract class Application implements Runnable {
     private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
     private boolean running;
-    private int vertexArray, vertexBuffer, indexBuffer;
-    private Shader shader;
+    private final int vertexArray;
+    private final Shader shader;
+    private final VertexBuffer vertexBuffer;
+    private final IndexBuffer indexBuffer;
     
-    public Application() {
+    protected Application() {
         Log.coreAssert(app == null, "Application already exists!");
         app = this;
         
@@ -36,25 +40,19 @@ public abstract class Application implements Runnable {
         
         vertexArray = glGenVertexArrays();
         glBindVertexArray(vertexArray);
-        
-        vertexBuffer = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-        
+
         float vertices[] = {
             -0.5f, -0.5f, 0.0f,
              0.5f, -0.5f, 0.0f,
              0.0f,  0.5f, 0.0f,
         };
+        vertexBuffer = VertexBuffer.create(vertices);
         
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.BYTES, NULL);
-        
-        indexBuffer = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-        
+                
         int indices[] = {0, 1, 2};
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        indexBuffer = IndexBuffer.create(indices);
         
         String vertexSource = 
             """
@@ -92,7 +90,7 @@ public abstract class Application implements Runnable {
             
             shader.bind();
             glBindVertexArray(vertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
+            glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, NULL);
             
             layerStack.onUpdate();
             

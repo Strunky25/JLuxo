@@ -12,7 +12,6 @@ public abstract class MouseEvent extends Event {
         private final float mouseX, mouseY;
         
         public MouseMovedEvent(float x, float y) {
-            super();
             this.mouseX = x;
             this.mouseY = y;
         }
@@ -36,7 +35,6 @@ public abstract class MouseEvent extends Event {
         private final float xOffset, yOffset;
         
         public MouseScrolledEvent(float xOffset, float yOffset) {
-            super();
             this.xOffset = xOffset;
             this.yOffset = yOffset;
         }
