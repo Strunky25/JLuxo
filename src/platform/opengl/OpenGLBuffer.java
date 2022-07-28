@@ -26,10 +26,18 @@ public abstract class OpenGLBuffer implements Buffer {
     
     public static class OpenGLVertexBuffer extends OpenGLBuffer implements VertexBuffer {
         
+        private BufferLayout layout;
+        
         public OpenGLVertexBuffer(float[] vertices) {
             glBindBuffer(GL_ARRAY_BUFFER, rendererID);
             glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
         }      
+
+        @Override
+        public void setLayout(BufferLayout layout) { this.layout = layout; }
+
+        @Override
+        public BufferLayout getLayout() { return layout; }
     }
     
     public static class OpenGLIndexBuffer extends OpenGLBuffer implements IndexBuffer {

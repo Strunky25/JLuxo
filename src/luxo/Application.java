@@ -4,7 +4,11 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
+import luxo.renderer.Buffer;
+import luxo.renderer.Buffer.BufferElement;
+import luxo.renderer.Buffer.BufferLayout;
 import luxo.renderer.Buffer.IndexBuffer;
+import luxo.renderer.Buffer.ShaderDataType;
 import luxo.renderer.Buffer.VertexBuffer;
 import luxo.renderer.Shader;
 import platform.windows.WindowsWindow;
@@ -42,28 +46,50 @@ public abstract class Application implements Runnable {
         glBindVertexArray(vertexArray);
 
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+             0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+             0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
         };
         vertexBuffer = VertexBuffer.create(vertices);
         
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.BYTES, NULL);
+        {
+            BufferLayout layout = new BufferLayout(
+                new BufferElement(ShaderDataType.FLOAT3, "position"),
+                new BufferElement(ShaderDataType.FLOAT4, "color")
+            );
+            vertexBuffer.setLayout(layout);
+        } 
+        
+        int index = 0;
+        BufferLayout layout = vertexBuffer.getLayout();
+        for(BufferElement element : layout) {
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index, 
+                element.getComponentCount(),
+                element.type.toOpenGL(),
+                element.normalized,
+                layout.getStride(),
+                element.offset);
+            index++;
+        }
                 
         int indices[] = {0, 1, 2};
         indexBuffer = IndexBuffer.create(indices);
         
-        String vertexSource = 
+        String vertexSource =  
             """
             #version 330 core
             
             layout(location = 0) in vec3 position;
+            layout(location = 1) in vec4 color;
+            
             out vec3 v_pos;
+            out vec4 v_col;
             
             void main() {
                 gl_Position = vec4(position, 1.0);
                 v_pos = position;
+                v_col = color;
             }
             """;
         String fragmentSource = 
@@ -71,10 +97,11 @@ public abstract class Application implements Runnable {
             #version 330 core
             
             in vec3 v_pos;
+            in vec4 v_col;
             out vec4 color;
             
             void main() {
-                color = vec4(v_pos * 0.5 + 0.5, 1.0);
+                color = v_col;
             }
             """;
         
