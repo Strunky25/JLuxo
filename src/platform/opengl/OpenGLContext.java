@@ -12,7 +12,7 @@ public class OpenGLContext extends GraphicsContext {
     private final long windowHandle;
     
     public OpenGLContext(long windowHandle) {
-        assert windowHandle != NULL : "Window handle is Null!";
+        Log.coreAssert(windowHandle != NULL , "Window handle is Null!");
         this.windowHandle = windowHandle;
     }
 

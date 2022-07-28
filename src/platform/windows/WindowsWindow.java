@@ -43,7 +43,7 @@ public class WindowsWindow extends Window {
         glfwSetErrorCallback(WindowsWindow::GLFWErrorCallback);
         if(!GLFWInitialized) {
             boolean success = GLFW.glfwInit();
-            assert success : "Could not initialize GLFW!";
+            Log.coreAssert(success, "Could not initialize GLFW!");
             GLFWInitialized = true;
         }
         
@@ -51,7 +51,7 @@ public class WindowsWindow extends Window {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
-        assert window != NULL : "Failed to create GLFW Window!";
+        Log.coreAssert(window != NULL, "Failed to create GLFW Window!");
         
         context = new OpenGLContext(window);
         context.init();

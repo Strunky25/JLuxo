@@ -4,6 +4,7 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
+import luxo.renderer.Shader;
 import platform.windows.WindowsWindow;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL41C.*;
@@ -16,11 +17,12 @@ public abstract class Application implements Runnable {
     protected final Window window;
     private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
-    private int vertexArray, vertexBuffer, indexBuffer;
     private boolean running;
+    private int vertexArray, vertexBuffer, indexBuffer;
+    private Shader shader;
     
     public Application() {
-        assert app == null : "Application already exists!";
+        Log.coreAssert(app == null, "Application already exists!");
         app = this;
         
         running = true;
@@ -53,6 +55,32 @@ public abstract class Application implements Runnable {
         
         int indices[] = {0, 1, 2};
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        
+        String vertexSource = 
+            """
+            #version 330 core
+            
+            layout(location = 0) in vec3 position;
+            out vec3 v_pos;
+            
+            void main() {
+                gl_Position = vec4(position, 1.0);
+                v_pos = position;
+            }
+            """;
+        String fragmentSource = 
+            """
+            #version 330 core
+            
+            in vec3 v_pos;
+            out vec4 color;
+            
+            void main() {
+                color = vec4(v_pos * 0.5 + 0.5, 1.0);
+            }
+            """;
+        
+        shader = new Shader(vertexSource, fragmentSource);
     }
     
     @Override
@@ -62,6 +90,7 @@ public abstract class Application implements Runnable {
         while (running) {
             glClear(GL_COLOR_BUFFER_BIT);
             
+            shader.bind();
             glBindVertexArray(vertexArray);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
             

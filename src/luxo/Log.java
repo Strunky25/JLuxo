@@ -77,6 +77,10 @@ public class Log {
         System.out.println(RED + format(CORE, obj.toString(), args) + RESET);
     }
     
+    public static void coreAssert(boolean condition, String errorMsg) {
+        if(!condition) coreError(errorMsg);
+    }
+    
     /* Client Log Methods */
     public static void trace(String txt, Object... args) {
         System.out.println(format(CLIENT, txt, args));
@@ -114,5 +118,9 @@ public class Log {
     }
     public static void fatal(Object obj, Object... args) {
         System.out.println(RED + format(CLIENT, obj.toString(), args) + RESET);
+    }
+    
+    public static void Assert(boolean condition, String errorMsg) {
+        if(!condition) error(errorMsg);
     }
 }
