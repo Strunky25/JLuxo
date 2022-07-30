@@ -30,4 +30,9 @@ public class OpenGLContext extends GraphicsContext {
         glfwSwapBuffers(windowHandle);
     }
 
+    @Override
+    public void dispose() {
+        GL.destroy();
+    }
+
 }

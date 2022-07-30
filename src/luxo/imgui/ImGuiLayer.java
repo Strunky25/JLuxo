@@ -37,7 +37,6 @@ public class ImGuiLayer extends Layer {
         io.setConfigViewportsNoTaskBarIcon(true);
         
         implGLFW.init(window, true);
-        GL.createCapabilities();
         implOpenGL.init("#version 410");
     }
 

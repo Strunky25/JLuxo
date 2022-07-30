@@ -4,15 +4,14 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
-import luxo.renderer.Buffer;
 import luxo.renderer.Buffer.BufferElement;
 import luxo.renderer.Buffer.BufferLayout;
 import luxo.renderer.Buffer.IndexBuffer;
 import luxo.renderer.Buffer.ShaderDataType;
 import luxo.renderer.Buffer.VertexBuffer;
 import luxo.renderer.Shader;
+import luxo.renderer.VertexArray;
 import platform.windows.WindowsWindow;
-import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL41C.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -23,11 +22,9 @@ public abstract class Application implements Runnable {
     protected final Window window;
     private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
+    private final Shader shader, blueShader;
+    private final VertexArray vertexArray, squareVA;
     private boolean running;
-    private final int vertexArray;
-    private final Shader shader;
-    private final VertexBuffer vertexBuffer;
-    private final IndexBuffer indexBuffer;
     
     protected Application() {
         Log.coreAssert(app == null, "Application already exists!");
@@ -42,39 +39,44 @@ public abstract class Application implements Runnable {
         imGuiLayer = new ImGuiLayer(window.getPointer());
         pushOverlay(imGuiLayer);
         
-        vertexArray = glGenVertexArrays();
-        glBindVertexArray(vertexArray);
+        vertexArray = VertexArray.create();
 
         float vertices[] = {
+            /*  position    */  /*  Color            */ 
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
         };
-        vertexBuffer = VertexBuffer.create(vertices);
+        VertexBuffer vertexBuffer = VertexBuffer.create(vertices);
+        BufferLayout layout = new BufferLayout(
+            new BufferElement(ShaderDataType.FLOAT3, "position"),
+            new BufferElement(ShaderDataType.FLOAT4, "color")
+        );
         
-        {
-            BufferLayout layout = new BufferLayout(
-                new BufferElement(ShaderDataType.FLOAT3, "position"),
-                new BufferElement(ShaderDataType.FLOAT4, "color")
-            );
-            vertexBuffer.setLayout(layout);
-        } 
-        
-        int index = 0;
-        BufferLayout layout = vertexBuffer.getLayout();
-        for(BufferElement element : layout) {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, 
-                element.getComponentCount(),
-                element.type.toOpenGL(),
-                element.normalized,
-                layout.getStride(),
-                element.offset);
-            index++;
-        }
+        vertexBuffer.setLayout(layout);
+        vertexArray.addVertexBuffer(vertexBuffer);
                 
         int indices[] = {0, 1, 2};
-        indexBuffer = IndexBuffer.create(indices);
+        IndexBuffer indexBuffer = IndexBuffer.create(indices);
+        vertexArray.setIndexBuffer(indexBuffer);
+        
+        float[] squareVertices = {
+            /*  position    */
+            -0.75f, -0.75f, 0.0f,
+             0.75f, -0.75f, 0.0f,
+             0.75f,  0.75f, 0.0f,
+            -0.75f,  0.75f, 0.0f,
+        };
+        
+        squareVA = VertexArray.create();
+        VertexBuffer squareVB = VertexBuffer.create(squareVertices);
+        squareVB.setLayout(new BufferLayout(
+            new BufferElement(ShaderDataType.FLOAT3, "position")
+        ));
+        squareVA.addVertexBuffer(squareVB);
+        int squareIndices[] = {0, 1, 2, 2, 3, 0};
+        IndexBuffer squareIB = IndexBuffer.create(squareIndices);
+        squareVA.setIndexBuffer(squareIB);
         
         String vertexSource =  
             """
@@ -104,20 +106,47 @@ public abstract class Application implements Runnable {
                 color = v_col;
             }
             """;
-        
         shader = new Shader(vertexSource, fragmentSource);
+        String blueVertexSource =  
+            """
+            #version 330 core
+            
+            layout(location = 0) in vec3 position;
+            
+            out vec3 v_pos;
+            
+            void main() {
+                gl_Position = vec4(position, 1.0);
+                v_pos = position;
+            }
+            """;
+        String blueFragmentSource = 
+            """
+            #version 330 core
+            
+            in vec3 v_pos;
+            out vec4 color;
+            
+            void main() {
+                color = vec4(0.2, 0.3, 0.8, 1.0);
+            }
+            """;
+        blueShader = new Shader(blueVertexSource, blueFragmentSource);
     }
     
     @Override
     public void run() {
-        GL.createCapabilities();
         glClearColor(0.1f, 0.1f, 0.1f, 1);
         while (running) {
             glClear(GL_COLOR_BUFFER_BIT);
             
+            blueShader.bind();
+            squareVA.bind();
+            glDrawElements(GL_TRIANGLES, squareVA.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
+            
             shader.bind();
-            glBindVertexArray(vertexArray);
-            glDrawElements(GL_TRIANGLES, indexBuffer.getCount(), GL_UNSIGNED_INT, NULL);
+            vertexArray.bind();
+            glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
             
             layerStack.onUpdate();
             
@@ -127,6 +156,7 @@ public abstract class Application implements Runnable {
             
             window.onUpdate();
         }
+        dispose();
     }  
     
     public void onEvent(Event event){
@@ -144,9 +174,24 @@ public abstract class Application implements Runnable {
         overlay.onAttach();
     }
     
+    /*
+    protected final Window window;
+    private final ImGuiLayer imGuiLayer;
+    private final LayerStack layerStack;
+    private final Shader shader, blueShader;
+    private final VertexArray vertexArray, squareVA;
+    */
+    public void dispose() {
+        //imGuiLayer.dispose();
+        //layerStack.dispose();
+        shader.dispose();
+        blueShader.dispose();
+        vertexArray.dispose();
+        squareVA.dispose();
+        window.dispose();
+    }
+    
     public Window getWindow() { return this.window; }
     
-    public static Application get() {
-        return app;
-    }
+    public static Application get() { return app; }
 }

@@ -47,9 +47,6 @@ public class WindowsWindow extends Window {
             GLFWInitialized = true;
         }
         
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
         Log.coreAssert(window != NULL, "Failed to create GLFW Window!");
         
@@ -128,7 +125,11 @@ public class WindowsWindow extends Window {
         return new WindowsWindow(properties);
     }
     
-    public void dispose() {}
+    @Override
+    public void dispose() {
+        context.dispose();
+        glfwDestroyWindow(window);
+    }
     
     private static void GLFWErrorCallback(int error, long description) {
         Log.coreError("GLFW Error (%d): %s", error, description);

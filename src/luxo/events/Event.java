@@ -4,19 +4,13 @@ public abstract class Event {
     
     public boolean handled;
     
-    public Event(){
-        handled = false;
-    }
+    public Event() { handled = false; }
     
-    public Type getType(){
-        return Type.None;
-    }
+    public Type getType() { return Type.None; }
     
     public abstract String getName();
     
-    public int getCategoryFlags() {
-        return Category.None.getFlag();
-    }
+    public int getCategoryFlags() { return Category.None.getFlag(); }
     
     public boolean isInCategory(Category category){
         return (getCategoryFlags() & category.getFlag()) == category.getFlag();
@@ -45,14 +39,10 @@ public abstract class Event {
         
         private final int bit;
         
-        Category(int bit) {
-            this.bit = bit;
-        }
+        Category(int bit) { this.bit = bit;}
         
         public int getFlag() { return bit; }
     }
     
-    private static int BIT(int pos) {
-        return (1 << pos);
-    }
+    private static int BIT(int pos) { return (1 << pos); }
 }

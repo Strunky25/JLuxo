@@ -3,9 +3,7 @@ package luxo.events;
 public abstract class ApplicationEvent extends Event {
     
     @Override
-    public int getCategoryFlags() {
-        return Category.Application.getFlag();
-    }
+    public int getCategoryFlags() { return Category.Application.getFlag(); }
     
     public static class WindowResizedEvent extends ApplicationEvent {
 
@@ -17,9 +15,7 @@ public abstract class ApplicationEvent extends Event {
         }
 
         @Override
-        public Type getType() {
-            return Type.WindowResized;
-        }
+        public Type getType() { return Type.WindowResized; }
       
         @Override
         public String getName() {
@@ -35,9 +31,7 @@ public abstract class ApplicationEvent extends Event {
         }
       
         @Override
-        public String getName() {
-            return "WindowClosedEvent";
-        }    
+        public String getName() { return "WindowClosedEvent"; }    
     }
     
     public static class AppTickEvent extends ApplicationEvent {

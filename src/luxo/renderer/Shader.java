@@ -50,6 +50,8 @@ public class Shader {
         glDetachShader(rendererID, fragmentShader );
     }
     
+    public void dispose() { glDeleteProgram(rendererID); }
+    
     public void bind() { glUseProgram(rendererID); }
     
     public void unbind() { glUseProgram(0); }

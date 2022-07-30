@@ -25,9 +25,7 @@ public abstract class KeyEvent extends Event {
         public int getRepeatCount() { return this.repeatCount; }
 
         @Override
-        public Type getType() {
-            return Type.KeyPressed;
-        }
+        public Type getType() { return Type.KeyPressed; }
 
         @Override
         public String getName() {
@@ -37,18 +35,12 @@ public abstract class KeyEvent extends Event {
     
     public static class KeyReleasedEvent extends KeyEvent {
         
-        public KeyReleasedEvent(int keyCode) {
-            super(keyCode);
-        }
+        public KeyReleasedEvent(int keyCode) { super(keyCode); }
 
         @Override
-        public Type getType() {
-            return Type.KeyReleased;
-        }
+        public Type getType() { return Type.KeyReleased; }
 
         @Override
-        public String getName() {
-            return "KeyReleasedEvent: " + keyCode;
-        }        
+        public String getName() { return "KeyReleasedEvent: " + keyCode; }        
     }
 }

@@ -31,6 +31,8 @@ public abstract class Window {
     public abstract void setVSync(boolean enabled);
     public abstract boolean isVSync();
     
+    public abstract void dispose();
+    
     public abstract Window create(final WindowProperties properties);
     
     public interface EventCallback {

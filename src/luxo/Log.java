@@ -53,9 +53,11 @@ public class Log {
     
     public static void coreError(String txt, Object... args) {
         System.out.println(RED + format(CORE, txt, args) + RESET);
+        System.exit(1);
     }
     public static void coreFatal(String txt, Object... args) {
         System.out.println(RED + format(CORE, txt, args) + RESET);
+        System.exit(1);
     }
     
     public static void coreTrace(Object obj, Object... args) {
@@ -72,9 +74,11 @@ public class Log {
     
     public static void coreError(Object obj, Object... args) {
         System.out.println(RED + format(CORE, obj.toString(), args) + RESET);
+        System.exit(1);
     }
     public static void coreFatal(Object obj, Object... args) {
         System.out.println(RED + format(CORE, obj.toString(), args) + RESET);
+        System.exit(1);
     }
     
     public static void coreAssert(boolean condition, String errorMsg) {
@@ -96,9 +100,11 @@ public class Log {
     
     public static void error(String txt, Object... args) {
         System.out.println(RED + format(CLIENT, txt, args) + RESET);
+        System.exit(1);
     }
     public static void fatal(String txt, Object... args) {
         System.out.println(RED + format(CLIENT, txt, args) + RESET);
+        System.exit(1);
     }
     
     public static void trace(Object obj, Object... args) {
@@ -115,9 +121,11 @@ public class Log {
     
     public static void error(Object obj, Object... args) {
         System.out.println(RED + format(CLIENT, obj.toString(), args) + RESET);
+        System.exit(1);
     }
     public static void fatal(Object obj, Object... args) {
         System.out.println(RED + format(CLIENT, obj.toString(), args) + RESET);
+        System.exit(1);
     }
     
     public static void Assert(boolean condition, String errorMsg) {
