@@ -1,5 +1,7 @@
 package luxo;
 
+import glm_.vec3.Vec3;
+import glm_.vec4.Vec4;
 import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
@@ -7,7 +9,6 @@ import luxo.imgui.ImGuiLayer;
 import luxo.renderer.*;
 import luxo.renderer.Buffer.*;
 import platform.windows.WindowsWindow;
-import org.joml.Vector4f;
 
 
 public abstract class Application implements Runnable {
@@ -20,6 +21,7 @@ public abstract class Application implements Runnable {
     private final Shader shader, blueShader;
     private final VertexArray vertexArray, squareVA;
     private boolean running;
+    private OrthoCamera camera;
     
     protected Application() {
         Log.coreAssert(app == null, "Application already exists!");
@@ -35,6 +37,8 @@ public abstract class Application implements Runnable {
         pushOverlay(imGuiLayer);
         
         vertexArray = VertexArray.create();
+        
+        camera = new OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f);
 
         float vertices[] = {
             /*  position    */  /*  Color            */ 
@@ -80,11 +84,13 @@ public abstract class Application implements Runnable {
             layout(location = 0) in vec3 position;
             layout(location = 1) in vec4 color;
             
+            uniform mat4 viewProjection;
+            
             out vec3 v_pos;
             out vec4 v_col;
             
             void main() {
-                gl_Position = vec4(position, 1.0);
+                gl_Position = viewProjection * vec4(position, 1.0);
                 v_pos = position;
                 v_col = color;
             }
@@ -106,12 +112,14 @@ public abstract class Application implements Runnable {
             """
             #version 330 core
             
+            uniform mat4 viewProjection;
+            
             layout(location = 0) in vec3 position;
             
             out vec3 v_pos;
             
             void main() {
-                gl_Position = vec4(position, 1.0);
+                gl_Position = viewProjection * vec4(position, 1.0);
                 v_pos = position;
             }
             """;
@@ -131,17 +139,16 @@ public abstract class Application implements Runnable {
 
     @Override
     public void run() {
+        camera.setPosition(new Vec3(0.5f, 0.5f, 0));
+        camera.setRotation(45);
         while (running) {
-            RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
+            RenderCommand.setClearColor(new Vec4(0.1f, 0.1f, 0.1f, 1));
             RenderCommand.clear();
+                      
+            Renderer.beginScene(camera);
             
-            Renderer.beginScene();
-            
-            blueShader.bind();
-            Renderer.submit(squareVA);
-            
-            shader.bind();
-            Renderer.submit(vertexArray);      
+            Renderer.submit(blueShader, squareVA);
+            Renderer.submit(shader, vertexArray);      
             
             Renderer.endScene();      
             Renderer.flush();
@@ -149,7 +156,7 @@ public abstract class Application implements Runnable {
             layerStack.onUpdate();
             
             imGuiLayer.begin();
-            layerStack.onImGuiRender();
+            //layerStack.onImGuiRender();
             imGuiLayer.end();
             
             window.onUpdate();

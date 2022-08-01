@@ -1,7 +1,8 @@
 package luxo.renderer;
 
+import glm_.mat4x4.Mat4;
 import luxo.Log;
-import static org.lwjgl.opengl.GL41C.*;
+import static org.lwjgl.opengl.GL46C.*;
 
 
 public class Shader {
@@ -55,4 +56,9 @@ public class Shader {
     public void bind() { glUseProgram(rendererID); }
     
     public void unbind() { glUseProgram(0); }
+    
+    public void uploadUniformMat4(final String name, final Mat4 uniform) {
+        int location = glGetUniformLocation(rendererID, name);
+        glUniformMatrix4fv(location, false, uniform.getArray());
+    }
 }
