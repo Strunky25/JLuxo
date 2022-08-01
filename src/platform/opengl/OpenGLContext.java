@@ -32,6 +32,7 @@ public class OpenGLContext extends GraphicsContext {
 
     @Override
     public void dispose() {
+        //GL.setCapabilities(null);
         GL.destroy();
     }
 

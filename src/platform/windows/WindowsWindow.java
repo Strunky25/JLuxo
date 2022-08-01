@@ -7,11 +7,13 @@ import luxo.events.KeyEvent;
 import luxo.events.KeyEvent.*;
 import luxo.events.MouseEvent.*;
 import luxo.renderer.GraphicsContext;
+import platform.opengl.OpenGLContext;
+
 import org.lwjgl.glfw.*;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import org.lwjgl.system.jni.JNINativeInterface;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import platform.opengl.OpenGLContext;
 
 public class WindowsWindow extends Window {
     
@@ -39,7 +41,6 @@ public class WindowsWindow extends Window {
         data.height = properties.height;
         
         Log.coreInfo("Creating Window %s (%d, %d)", data.title, data.width, data.height);
-        
         glfwSetErrorCallback(WindowsWindow::GLFWErrorCallback);
         if(!GLFWInitialized) {
             boolean success = GLFW.glfwInit();
@@ -128,11 +129,15 @@ public class WindowsWindow extends Window {
     @Override
     public void dispose() {
         context.dispose();
+        glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
+        try { glfwSetErrorCallback(null).free();
+        } catch (NullPointerException ex) {}
+        glfwTerminate();
     }
     
     private static void GLFWErrorCallback(int error, long description) {
-        Log.coreError("GLFW Error (%d): %s", error, description);
+        Log.coreError("GLFW Error (%d): %s", error, GLFWErrorCallback.getDescription(description));
     }
     
     @Override

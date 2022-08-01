@@ -42,9 +42,7 @@ public abstract class ApplicationEvent extends Event {
         }
       
         @Override
-        public String getName() {
-            return "AppTickEvent";
-        }    
+        public String getName() { return "AppTickEvent"; }    
     }
     
     public static class AppUpdateEvent extends ApplicationEvent {
@@ -55,9 +53,7 @@ public abstract class ApplicationEvent extends Event {
         }
       
         @Override
-        public String getName() {
-            return "AppUpdateEvent";
-        }    
+        public String getName() { return "AppUpdateEvent"; }    
     }
     
     public static class AppRenderEvent extends ApplicationEvent {
@@ -68,9 +64,7 @@ public abstract class ApplicationEvent extends Event {
         }
       
         @Override
-        public String getName() {
-            return "AppRenderEvent";
-        }    
+        public String getName() { return "AppRenderEvent"; }    
     }
 }
 

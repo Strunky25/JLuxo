@@ -4,16 +4,11 @@ import luxo.Window.WindowProperties;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
-import luxo.renderer.Buffer.BufferElement;
-import luxo.renderer.Buffer.BufferLayout;
-import luxo.renderer.Buffer.IndexBuffer;
-import luxo.renderer.Buffer.ShaderDataType;
-import luxo.renderer.Buffer.VertexBuffer;
-import luxo.renderer.Shader;
-import luxo.renderer.VertexArray;
+import luxo.renderer.*;
+import luxo.renderer.Buffer.*;
 import platform.windows.WindowsWindow;
-import static org.lwjgl.opengl.GL41C.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import org.joml.Vector4f;
+
 
 public abstract class Application implements Runnable {
     
@@ -133,20 +128,23 @@ public abstract class Application implements Runnable {
             """;
         blueShader = new Shader(blueVertexSource, blueFragmentSource);
     }
-    
+
     @Override
     public void run() {
-        glClearColor(0.1f, 0.1f, 0.1f, 1);
         while (running) {
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
+            RenderCommand.clear();
+            
+            Renderer.beginScene();
             
             blueShader.bind();
-            squareVA.bind();
-            glDrawElements(GL_TRIANGLES, squareVA.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
+            Renderer.submit(squareVA);
             
             shader.bind();
-            vertexArray.bind();
-            glDrawElements(GL_TRIANGLES, vertexArray.getIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
+            Renderer.submit(vertexArray);      
+            
+            Renderer.endScene();      
+            Renderer.flush();
             
             layerStack.onUpdate();
             
@@ -173,14 +171,7 @@ public abstract class Application implements Runnable {
         layerStack.pushLayer(overlay);
         overlay.onAttach();
     }
-    
-    /*
-    protected final Window window;
-    private final ImGuiLayer imGuiLayer;
-    private final LayerStack layerStack;
-    private final Shader shader, blueShader;
-    private final VertexArray vertexArray, squareVA;
-    */
+
     public void dispose() {
         //imGuiLayer.dispose();
         //layerStack.dispose();

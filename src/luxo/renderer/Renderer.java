@@ -1,14 +1,18 @@
 package luxo.renderer;
 
+import luxo.renderer.RendererAPI.API;
 
 public class Renderer {
     
-    private static final RendererAPI RENDERER_API = RendererAPI.OPENGL;
+    public static void beginScene() {}
+    public static void endScene() {}
     
-    public static RendererAPI getAPI() { return RENDERER_API; }
-    
-    public enum RendererAPI {
-        NONE,
-        OPENGL
+    public static void submit(VertexArray vertexArray) {
+        vertexArray.bind();
+        RenderCommand.drawIndexed(vertexArray);
     }
+    
+    public static void flush() {}
+    
+    public static API getAPI() { return RendererAPI.getAPI(); }
 }

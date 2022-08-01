@@ -13,6 +13,7 @@ public class EntryPoint {
         
         Application app = new Sandbox();
         app.run();
+        app.dispose();
     }
     
 }

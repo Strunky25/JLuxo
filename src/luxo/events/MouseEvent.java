@@ -20,9 +20,7 @@ public abstract class MouseEvent extends Event {
         public float getY() { return mouseY; }
 
         @Override
-        public Type getType() {
-            return Type.MouseMoved;
-        }   
+        public Type getType() { return Type.MouseMoved; }   
         
         @Override
         public String getName() {
@@ -43,9 +41,7 @@ public abstract class MouseEvent extends Event {
         public float getYOffset() { return yOffset; }
 
         @Override
-        public Type getType() {
-            return Type.MouseScrolled;
-        }   
+        public Type getType() { return Type.MouseScrolled; }   
         
         @Override
         public String getName() {
@@ -62,7 +58,8 @@ public abstract class MouseEvent extends Event {
 
         @Override
         public int getCategoryFlags() {
-            return Category.MouseButton.getFlag() | Category.Mouse.getFlag() | Category.Input.getFlag();
+            return Category.MouseButton.getFlag() | Category.Mouse.getFlag()
+                    | Category.Input.getFlag();
         }
 
         public int getButton() { return this.button; }
@@ -73,14 +70,10 @@ public abstract class MouseEvent extends Event {
         public MouseButtonPressedEvent(int button) { super(button); }
 
         @Override
-        public Type getType() {
-            return Type.MouseButtonPressed;
-        }
+        public Type getType() { return Type.MouseButtonPressed; }
 
         @Override
-        public String getName() {
-            return "MouseButtonPressedEvent: " + button;
-        }
+        public String getName() { return "MouseButtonPressedEvent: " + button; }
     }
 
     public static class MouseButtonReleasedEvent extends MouseButtonEvent {
@@ -88,13 +81,9 @@ public abstract class MouseEvent extends Event {
         public MouseButtonReleasedEvent(int button) { super(button); }
 
         @Override
-        public Type getType() {
-            return Type.MouseButtonPressed;
-        }
+        public Type getType() { return Type.MouseButtonPressed; }
 
         @Override
-        public String getName() {
-            return "MouseButtonReleasedEvent: " + button;
-        }
+        public String getName() { return "MouseButtonReleasedEvent: " + button;}
     }
 }
