@@ -9,7 +9,6 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL;
 
 public class ImGuiLayer extends Layer {
     
@@ -44,7 +43,7 @@ public class ImGuiLayer extends Layer {
     public void onDetach() {
         implOpenGL.dispose();
         implGLFW.dispose();
-        ImGui.destroyContext();
+        //ImGui.destroyContext();
     }
 
     @Override
@@ -80,4 +79,9 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {}
+
+    @Override
+    public void dispose() {
+        onDetach();
+    }
 }

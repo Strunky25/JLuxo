@@ -1,7 +1,9 @@
 package luxo.renderer;
 
-import glm_.mat4x4.Mat4;
 import luxo.Log;
+import java.nio.FloatBuffer;
+import org.joml.Matrix4f;
+import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.opengl.GL46C.*;
 
 
@@ -57,8 +59,11 @@ public class Shader {
     
     public void unbind() { glUseProgram(0); }
     
-    public void uploadUniformMat4(final String name, final Mat4 uniform) {
+    public void uploadUniformMat4(final String name, final Matrix4f uniform) {
         int location = glGetUniformLocation(rendererID, name);
-        glUniformMatrix4fv(location, false, uniform.getArray());
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer fb = uniform.get(stack.mallocFloat(16));
+            glUniformMatrix4fv(location, false, fb);
+        }
     }
 }

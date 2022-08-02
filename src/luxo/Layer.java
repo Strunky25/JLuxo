@@ -15,6 +15,7 @@ public abstract class Layer {
     public abstract void onUpdate();
     public abstract void onImGuiRender();
     public abstract void onEvent(Event event);
+    public abstract void dispose();
     
     public final String getName() { return this.debugName; }
 }

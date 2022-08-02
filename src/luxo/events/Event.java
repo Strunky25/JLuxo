@@ -45,4 +45,25 @@ public abstract class Event {
     }
     
     private static int BIT(int pos) { return (1 << pos); }
+    
+    public interface EventCallback {
+        public void callback(Event event);
+    }
+    
+    public interface EventHandler {
+        public <T extends Event> boolean callback(T event);
+    }
+    
+    public static class EventDispatcher {
+        
+        private final Event event;
+        
+        public EventDispatcher(Event event) { this.event = event; }
+        
+        public <T extends Event> void dispatch(Class<T> t, EventHandler handler){
+            if(t.isAssignableFrom(event.getClass())){
+                event.handled = handler.callback(event);
+            }
+        }
+    }
 }

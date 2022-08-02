@@ -1,8 +1,8 @@
 package platform.opengl;
 
-import glm_.vec4.Vec4;
 import luxo.renderer.RendererAPI;
 import luxo.renderer.VertexArray;
+import org.joml.Vector4f;
 import static org.lwjgl.opengl.GL46C.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -14,8 +14,8 @@ public class OpenGLRendererAPI extends RendererAPI {
     }
 
     @Override
-    public void setClearColor(Vec4 color) {
-        glClearColor(color.r(), color.g(), color.b(), color.a());
+    public void setClearColor(Vector4f color) {
+        glClearColor(color.x, color.y, color.z, color.w);
     }
 
     @Override

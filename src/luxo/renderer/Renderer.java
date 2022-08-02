@@ -1,7 +1,7 @@
 package luxo.renderer;
 
-import glm_.mat4x4.Mat4;
 import luxo.renderer.RendererAPI.API;
+import org.joml.Matrix4f;
 
 public class Renderer {
     
@@ -25,6 +25,6 @@ public class Renderer {
     public static API getAPI() { return RendererAPI.getAPI(); }
     
     public static class SceneData {
-        Mat4 viewProjectionMatrix;
+        Matrix4f viewProjectionMatrix;
     }
 }

@@ -1,6 +1,6 @@
 package luxo;
 
-import luxo.events.Event;
+import luxo.events.Event.EventCallback;
 
 public abstract class Window {
     
@@ -34,10 +34,6 @@ public abstract class Window {
     public abstract void dispose();
     
     public abstract Window create(final WindowProperties properties);
-    
-    public interface EventCallback {
-        public void callback(Event event);
-    }
     
     public abstract long getPointer();
 }

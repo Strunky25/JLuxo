@@ -1,6 +1,6 @@
 package luxo.renderer;
 
-import glm_.vec4.Vec4;
+import org.joml.Vector4f;
 
 public abstract class RendererAPI {
     
@@ -11,7 +11,7 @@ public abstract class RendererAPI {
         OPENGL
     }
     
-    public abstract void setClearColor(Vec4 color);
+    public abstract void setClearColor(Vector4f color);
     public abstract void clear();
     
     public abstract void drawIndexed(VertexArray vertexArray);

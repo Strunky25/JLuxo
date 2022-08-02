@@ -3,6 +3,7 @@ package platform.windows;
 import luxo.Log;
 import luxo.Window;
 import luxo.events.ApplicationEvent.*;
+import luxo.events.Event.EventCallback;
 import luxo.events.KeyEvent;
 import luxo.events.KeyEvent.*;
 import luxo.events.MouseEvent.*;
@@ -116,7 +117,10 @@ public class WindowsWindow extends Window {
     public void setEventCallback(EventCallback callback) { data.eventCallback = callback; }
 
     @Override
-    public void setVSync(boolean enabled) { this.data.VSync = enabled; }
+    public void setVSync(boolean enabled) { 
+        glfwSwapInterval(enabled ? 1 : 0);
+        data.VSync = enabled;
+    }
 
     @Override
     public boolean isVSync() { return this.data.VSync; }

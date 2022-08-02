@@ -1,25 +1,24 @@
 package luxo.renderer;
 
-import glm_.mat4x4.Mat4;
-import glm_.vec3.Vec3;
-import static glm_.Java.glm;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class OrthoCamera {
     
-    private Mat4 projectionMatrix;
-    private Mat4 viewMatrix;
-    private Mat4 viewProjectionMatrix;
-    private Vec3 position;
+    private final Matrix4f projectionMatrix;
+    private Matrix4f viewMatrix;
+    private Matrix4f viewProjectionMatrix;
+    private Vector3f position;
     private float rotation;
     
     public OrthoCamera(float left, float right, float bottom, float top) {
-        projectionMatrix = glm.ortho(left, right, bottom, top, -1, 1);
-        viewMatrix = new Mat4(1);
-        viewProjectionMatrix = projectionMatrix.times(viewMatrix);
-        position = new Vec3();
+        projectionMatrix = new Matrix4f().ortho(left, right, bottom, top, -1, 1);
+        viewMatrix = new Matrix4f();
+        viewProjectionMatrix = projectionMatrix.mul(viewMatrix);
+        position = new Vector3f();
     }
     
-    public void setPosition(Vec3 position) { 
+    public void setPosition(Vector3f position) { 
        this.position = position;
        recalculateViewMatrix();
     }
@@ -28,16 +27,16 @@ public class OrthoCamera {
         recalculateViewMatrix();
     }
     
-    public Mat4 getProjectionMatrix() { return projectionMatrix; }
-    public Mat4 getViewMatrix() { return viewMatrix; }
-    public Mat4 getViewProjectionMatrix() { return viewProjectionMatrix; }
-    public Vec3 getPosition() { return position; }
+    public Matrix4f getProjectionMatrix() { return projectionMatrix; }
+    public Matrix4f getViewMatrix() { return viewMatrix; }
+    public Matrix4f getViewProjectionMatrix() { return viewProjectionMatrix; }
+    public Vector3f getPosition() { return position; }
     public float getRotation() { return rotation; }
     
     private void recalculateViewMatrix() {
-        Mat4 transform = glm.translate(new Mat4(1), position).times(
-                glm.rotate(new Mat4(1), rotation, new Vec3(0, 0, 1)));
-        viewMatrix = glm.inverse(transform);
-        viewProjectionMatrix = projectionMatrix.times(viewMatrix);
+        Matrix4f transform = new Matrix4f().translate(position).mul(
+                new Matrix4f().rotate(rotation, new Vector3f(0, 0, 1)));
+        viewMatrix = new Matrix4f(transform).invert();
+        viewProjectionMatrix = new Matrix4f(projectionMatrix).mul(viewMatrix);
     }
 }

@@ -28,10 +28,12 @@ public class LayerStack {
     
     public void onImGuiRender() { layers.forEach(((layer) -> layer.onImGuiRender())); } 
 
-    void onEvent(Event event) {
+    public void onEvent(Event event) {
         for(Layer layer: layers) {
             layer.onEvent(event);
             if(event.handled) break;
         }
     }
+    
+    public void dispose() { layers.forEach(((layer) -> layer.dispose())); }
 }
