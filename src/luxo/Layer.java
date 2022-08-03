@@ -1,5 +1,6 @@
 package luxo;
 
+import luxo.core.Timestep;
 import luxo.events.Event;
 
 public abstract class Layer {
@@ -12,7 +13,7 @@ public abstract class Layer {
     
     public abstract void onAttach();
     public abstract void onDetach();
-    public abstract void onUpdate();
+    public abstract void onUpdate(Timestep ts);
     public abstract void onImGuiRender();
     public abstract void onEvent(Event event);
     public abstract void dispose();

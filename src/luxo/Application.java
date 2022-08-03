@@ -1,9 +1,11 @@
 package luxo;
 
 import luxo.Window.WindowProperties;
+import luxo.core.Timestep;
 import luxo.events.ApplicationEvent.WindowClosedEvent;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import platform.windows.WindowsWindow;
 
 public abstract class Application implements Runnable {
@@ -13,6 +15,7 @@ public abstract class Application implements Runnable {
     protected final Window window;
     private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
+    private float lastFrameTime;
     private boolean running;
     
     protected Application() {
@@ -22,7 +25,6 @@ public abstract class Application implements Runnable {
         running = true;
         
         window = new WindowsWindow(new WindowProperties());
-        window.setVSync(true);
         window.setEventCallback(this::onEvent);
         
         layerStack = new LayerStack();
@@ -32,8 +34,12 @@ public abstract class Application implements Runnable {
 
     @Override
     public void run() {
-        while (running) {           
-            layerStack.onUpdate();
+        while (running) {      
+            float time = (float) glfwGetTime();
+            Timestep timestep = new Timestep(time - lastFrameTime);
+            lastFrameTime = time;
+            
+            layerStack.onUpdate(timestep);
             
             imGuiLayer.begin();
             layerStack.onImGuiRender();

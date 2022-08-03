@@ -12,7 +12,6 @@ import platform.opengl.OpenGLContext;
 
 import org.lwjgl.glfw.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import org.lwjgl.system.jni.JNINativeInterface;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -55,8 +54,6 @@ public class WindowsWindow extends Window {
         context = new OpenGLContext(window);
         context.init();
         
-        long dataPointer = JNINativeInterface.NewGlobalRef(data);
-        glfwSetWindowUserPointer(window, dataPointer);
         setVSync(true);
         
         glfwSetWindowSizeCallback(window, (long win, int width, int height) -> {

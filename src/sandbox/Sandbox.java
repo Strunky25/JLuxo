@@ -6,6 +6,8 @@ import luxo.Layer;
 import luxo.events.Event;
 import luxo.renderer.*;
 import static luxo.KeyCode.*;
+import luxo.Log;
+import luxo.core.Timestep;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -24,8 +26,8 @@ public class Sandbox extends Application {
         @Override
         public void onAttach() {
             vertexArray = VertexArray.create();
-            camMoveSpeed = 0.001f;
-            camRotSpeed = 0.001f;
+            camMoveSpeed = 1f;
+            camRotSpeed = 3f;
             camPos = new Vector3f(0);
             camera = new OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f);
 
@@ -131,19 +133,19 @@ public class Sandbox extends Application {
         }
 
         @Override
-        public void onUpdate() {
+        public void onUpdate(Timestep ts) {          
             if(Input.isKeyPressed(LX_KEY_LEFT))
-                camPos.x -= camMoveSpeed;
+                camPos.x -= camMoveSpeed * ts.getSeconds();
             else if(Input.isKeyPressed(LX_KEY_RIGHT))
-                camPos.x += camMoveSpeed;
+                camPos.x += camMoveSpeed * ts.getSeconds();
             if(Input.isKeyPressed(LX_KEY_DOWN))
-                camPos.y -= camMoveSpeed;
+                camPos.y -= camMoveSpeed * ts.getSeconds();
             else if(Input.isKeyPressed(LX_KEY_UP))
-                camPos.y += camMoveSpeed;
+                camPos.y += camMoveSpeed * ts.getSeconds();
             if(Input.isKeyPressed(LX_KEY_A))
-                camRot += camRotSpeed;
+                camRot += camRotSpeed * ts.getSeconds();
             else if(Input.isKeyPressed(LX_KEY_D))
-                camRot -= camRotSpeed;
+                camRot -= camRotSpeed * ts.getSeconds();
             
             RenderCommand.setClearColor(new Vector4f(0.1f, 0.1f, 0.1f, 1));
             RenderCommand.clear();

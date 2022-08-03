@@ -2,6 +2,7 @@ package luxo;
 
 import luxo.events.Event;
 import java.util.ArrayList;
+import luxo.core.Timestep;
 
 public class LayerStack {
     
@@ -24,7 +25,7 @@ public class LayerStack {
     }
     public void popOverlay(Layer overlay) { layers.remove(overlay); }
     
-    public void onUpdate() { layers.forEach(((layer) -> layer.onUpdate())); }
+    public void onUpdate(Timestep ts) { layers.forEach(((layer) -> layer.onUpdate(ts))); }
     
     public void onImGuiRender() { layers.forEach(((layer) -> layer.onImGuiRender())); } 
 

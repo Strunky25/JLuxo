@@ -8,6 +8,7 @@ import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import luxo.core.Timestep;
 import org.lwjgl.glfw.GLFW;
 
 public class ImGuiLayer extends Layer {
@@ -47,7 +48,7 @@ public class ImGuiLayer extends Layer {
     }
 
     @Override
-    public void onUpdate() {}
+    public void onUpdate(Timestep ts) {}
     
     public void begin() {
         /* Start Frame */
