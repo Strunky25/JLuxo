@@ -2,6 +2,7 @@ package luxo.renderer;
 
 import luxo.renderer.RendererAPI.API;
 import org.joml.Matrix4f;
+import platform.opengl.OpenGLShader;
 
 public class Renderer {
     
@@ -12,9 +13,11 @@ public class Renderer {
     }
     public static void endScene() {}
     
-    public static void submit(Shader shader, VertexArray vertexArray) {
+    public static void submit(Shader shader, VertexArray vertexArray, Matrix4f transform) {
         shader.bind();
-        shader.uploadUniformMat4("viewProjection", sceneData.viewProjectionMatrix);
+        OpenGLShader shad = (OpenGLShader) shader;
+        shad.uploadUniformMat4("viewProjection", sceneData.viewProjectionMatrix);
+        shad.uploadUniformMat4("transform", transform);
         
         vertexArray.bind();
         RenderCommand.drawIndexed(vertexArray);

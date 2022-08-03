@@ -5,132 +5,127 @@ import luxo.Input;
 import luxo.Layer;
 import luxo.events.Event;
 import luxo.renderer.*;
-import static luxo.KeyCode.*;
-import luxo.Log;
 import luxo.core.Timestep;
+import platform.opengl.OpenGLShader;
+import static luxo.KeyCode.*;
 
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-
+import imgui.ImGui;
+import luxo.renderer.Texture.Texture2D;
+import org.joml.*;
 
 public class Sandbox extends Application {
     
     public static class ExampleLayer extends Layer {
         
-        private Shader shader, blueShader;
-        private VertexArray vertexArray, squareVA;
+        private Shader flatColorShader, textureShader;  
+        private VertexArray squareVA;
         private OrthoCamera camera;
-        private Vector3f camPos;
+        private Vector3f camPos, squarePos;
+        private Texture2D texture;
+        private float[] squareCol;
         private float camMoveSpeed, camRotSpeed, camRot;
 
         @Override
         public void onAttach() {
-            vertexArray = VertexArray.create();
             camMoveSpeed = 1f;
             camRotSpeed = 3f;
             camPos = new Vector3f(0);
+            squarePos = new Vector3f(0);
             camera = new OrthoCamera(-1.6f, 1.6f, -0.9f, 0.9f);
-
-            float vertices[] = {
-                /*  position    */  /*  Color            */ 
-                -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-                 0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-                 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
-            };
-            Buffer.VertexBuffer vertexBuffer = Buffer.VertexBuffer.create(vertices);
-            Buffer.BufferLayout layout = new Buffer.BufferLayout(
-                new Buffer.BufferElement(Buffer.ShaderDataType.FLOAT3, "position"),
-                new Buffer.BufferElement(Buffer.ShaderDataType.FLOAT4, "color")
-            );
-
-            vertexBuffer.setLayout(layout);
-            vertexArray.addVertexBuffer(vertexBuffer);
-
-            int indices[] = {0, 1, 2};
-            Buffer.IndexBuffer indexBuffer = Buffer.IndexBuffer.create(indices);
-            vertexArray.setIndexBuffer(indexBuffer);
+            squareCol = new float[]{0.2f, 0.3f, 0.8f};
 
             float[] squareVertices = {
                 /*  position    */
-                -0.75f, -0.75f, 0.0f,
-                 0.75f, -0.75f, 0.0f,
-                 0.75f,  0.75f, 0.0f,
-                -0.75f,  0.75f, 0.0f,
+                -0.5f, -0.5f, 0.0f, 0, 0,
+                 0.5f, -0.5f, 0.0f, 1, 0,
+                 0.5f,  0.5f, 0.0f, 1, 1,
+                -0.5f,  0.5f, 0.0f, 0, 1,
             };
 
             squareVA = VertexArray.create();
             Buffer.VertexBuffer squareVB = Buffer.VertexBuffer.create(squareVertices);
             squareVB.setLayout(new Buffer.BufferLayout(
-                new Buffer.BufferElement(Buffer.ShaderDataType.FLOAT3, "position")
+                new Buffer.BufferElement(Buffer.ShaderDataType.FLOAT3, "position"),
+                new Buffer.BufferElement(Buffer.ShaderDataType.FLOAT2, "texCoord")
             ));
             squareVA.addVertexBuffer(squareVB);
             int squareIndices[] = {0, 1, 2, 2, 3, 0};
             Buffer.IndexBuffer squareIB = Buffer.IndexBuffer.create(squareIndices);
             squareVA.setIndexBuffer(squareIB);
 
-            String vertexSource =  
-                """
-                #version 330 core
-
-                layout(location = 0) in vec3 position;
-                layout(location = 1) in vec4 color;
-
-                uniform mat4 viewProjection;
-
-                out vec3 v_pos;
-                out vec4 v_col;
-
-                void main() {
-                    gl_Position = viewProjection * vec4(position, 1.0);
-                    v_pos = position;
-                    v_col = color;
-                }
-                """;
-            String fragmentSource = 
-                """
-                #version 330 core
-
-                in vec3 v_pos;
-                in vec4 v_col;
-                out vec4 color;
-
-                void main() {
-                    color = v_col;
-                }
-                """;
-            shader = new Shader(vertexSource, fragmentSource);
-            String blueVertexSource =  
+            String flatColorVertexSource =  
                 """
                 #version 330 core
 
                 uniform mat4 viewProjection;
+                uniform mat4 transform;
 
                 layout(location = 0) in vec3 position;
+                layout(location = 1) in vec2 texCoord;
 
                 out vec3 v_pos;
 
                 void main() {
-                    gl_Position = viewProjection * vec4(position, 1.0);
+                    gl_Position = viewProjection * transform * vec4(position, 1.0);
                     v_pos = position;
                 }
                 """;
-            String blueFragmentSource = 
+            String flatColorFragmentSource = 
                 """
                 #version 330 core
 
+                uniform vec3 col;
+                
                 in vec3 v_pos;
                 out vec4 color;
 
                 void main() {
-                    color = vec4(0.2, 0.3, 0.8, 1.0);
+                    color = vec4(col, 1.0);
                 }
                 """;
-            blueShader = new Shader(blueVertexSource, blueFragmentSource);
+            flatColorShader = Shader.create(flatColorVertexSource, flatColorFragmentSource);
+            
+            String textureVertexSource =  
+                """
+                #version 330 core
+                
+                layout(location = 0) in vec3 position;
+                layout(location = 1) in vec2 texCoord;
+
+                uniform mat4 viewProjection;
+                uniform mat4 transform;
+
+                out vec2 texCord;
+
+                void main() {
+                    gl_Position = viewProjection * transform * vec4(position, 1.0);
+                    texCord = texCoord;
+                }
+                """;
+            String textureFragmentSource = 
+                """
+                #version 330 core
+                
+                uniform sampler2D tex;
+                
+                in vec2 texCord;
+                
+                out vec4 color;
+
+                void main() {
+                    color = texture(tex, texCord);
+                }
+                """;
+            texture = Texture2D.create("assets/textures/Checkerboard.png");
+            texture.bind(0);
+            textureShader = Shader.create(textureVertexSource, textureFragmentSource);
+            
+            textureShader.bind();
+             ((OpenGLShader) flatColorShader).uploadUniformInt("tex", 0);
         }
 
         @Override
-        public void onDetach() {
-        }
+        public void onDetach() {}
 
         @Override
         public void onUpdate(Timestep ts) {          
@@ -142,6 +137,16 @@ public class Sandbox extends Application {
                 camPos.y -= camMoveSpeed * ts.getSeconds();
             else if(Input.isKeyPressed(LX_KEY_UP))
                 camPos.y += camMoveSpeed * ts.getSeconds();
+            
+            if(Input.isKeyPressed(LX_KEY_J))
+                squarePos.x -= camMoveSpeed * ts.getSeconds();
+            else if(Input.isKeyPressed(LX_KEY_L))
+                squarePos.x += camMoveSpeed * ts.getSeconds();
+            if(Input.isKeyPressed(LX_KEY_K))
+                squarePos.y -= camMoveSpeed * ts.getSeconds();
+            else if(Input.isKeyPressed(LX_KEY_I))
+                squarePos.y += camMoveSpeed * ts.getSeconds();
+            
             if(Input.isKeyPressed(LX_KEY_A))
                 camRot += camRotSpeed * ts.getSeconds();
             else if(Input.isKeyPressed(LX_KEY_D))
@@ -155,8 +160,16 @@ public class Sandbox extends Application {
             
             Renderer.beginScene(camera);
             
-            Renderer.submit(blueShader, squareVA);
-            Renderer.submit(shader, vertexArray);      
+            flatColorShader.bind();
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 20; j++) {
+                    Vector3f pos = new Vector3f(i * 0.11f, j * 0.11f, 0);
+                    ((OpenGLShader) flatColorShader).uploadUniformVec3("col", new Vector3f(squareCol));
+                    Renderer.submit(flatColorShader, squareVA, new Matrix4f().translate(pos).scale(0.1f));
+                }
+            }
+           
+            Renderer.submit(textureShader, squareVA, new Matrix4f().scale(1.5f));      
             
             Renderer.endScene();      
             //Renderer.flush();
@@ -164,6 +177,9 @@ public class Sandbox extends Application {
 
         @Override
         public void onImGuiRender() {
+            ImGui.begin("Settings");
+            ImGui.colorEdit3("SquareColor", squareCol);
+            ImGui.end();
         }
 
         @Override
@@ -174,15 +190,10 @@ public class Sandbox extends Application {
 
         @Override
         public void dispose() {
-            shader.dispose();
-            blueShader.dispose();
-            vertexArray.dispose();
+            flatColorShader.dispose();
             squareVA.dispose();
         }
     }
     
-    public Sandbox() {
-        pushLayer(new ExampleLayer());
-    }
-    
+    public Sandbox() { pushLayer(new ExampleLayer()); }
 }
