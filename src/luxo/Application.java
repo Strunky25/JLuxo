@@ -2,13 +2,14 @@ package luxo;
 
 import luxo.Window.WindowProperties;
 import luxo.core.Timestep;
-import luxo.events.ApplicationEvent.WindowClosedEvent;
+import luxo.events.ApplicationEvent.*;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
+import luxo.renderer.Renderer;
 import platform.windows.WindowsWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
-public abstract class Application implements Runnable {
+public abstract class Application {
     
     private static Application app;
     
@@ -16,7 +17,7 @@ public abstract class Application implements Runnable {
     private final ImGuiLayer imGuiLayer;
     private final LayerStack layerStack;
     private float lastFrameTime;
-    private boolean running;
+    private boolean running, minimized;
     
     protected Application() {
         Log.coreAssert(app == null, "Application already exists!");
@@ -27,23 +28,26 @@ public abstract class Application implements Runnable {
         window = new WindowsWindow(new WindowProperties());
         window.setEventCallback(this::onEvent);
         
+        Renderer.init();
+        
         layerStack = new LayerStack();
         imGuiLayer = new ImGuiLayer(window.getPointer());
         pushOverlay(imGuiLayer);
     }
 
-    @Override
     public void run() {
         while (running) {      
             float time = (float) glfwGetTime();
             Timestep timestep = new Timestep(time - lastFrameTime);
             lastFrameTime = time;
             
-            layerStack.onUpdate(timestep);
-            
+            if(!minimized) {
+                layerStack.onUpdate(timestep);
+            }
             imGuiLayer.begin();
             layerStack.onImGuiRender();
             imGuiLayer.end();
+
             
             window.onUpdate();
         }
@@ -51,8 +55,16 @@ public abstract class Application implements Runnable {
     }  
     
     public void onEvent(Event event){
-        if(event instanceof WindowClosedEvent) running = false;
+        if(event instanceof WindowClosedEvent evt) 
+            event.handled = onWindowClosed(evt);
+        if(event instanceof WindowResizedEvent evt)
+            event.handled = onWindowResized(evt);
         layerStack.onEvent(event);
+    }
+    
+    public void dispose() {
+        layerStack.dispose();
+        window.dispose();
     }
     
     public final void pushLayer(Layer layer){
@@ -64,13 +76,23 @@ public abstract class Application implements Runnable {
         layerStack.pushLayer(overlay);
         overlay.onAttach();
     }
-
-    public void dispose() {
-        layerStack.dispose();
-        window.dispose();
-    }
     
     public Window getWindow() { return this.window; }
     
     public static Application get() { return app; }
+    
+    private boolean onWindowClosed(WindowClosedEvent evt) {
+        this.running = false;
+        return true;
+    }
+    
+    private boolean onWindowResized(WindowResizedEvent evt) {
+        if(evt.getWidth() == 0 || evt.getHeight() == 0) {
+            this.minimized = true;
+            return false;
+        }
+        this.minimized = false;
+        Renderer.onWindowResized(evt.getWidth(), evt.getHeight());
+        return false;
+    }
 }

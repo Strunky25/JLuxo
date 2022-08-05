@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 
 public class OrthoCamera {
     
-    private final Matrix4f projectionMatrix;
+    private Matrix4f projectionMatrix;
     private Matrix4f viewMatrix;
     private Matrix4f viewProjectionMatrix;
     private Vector3f position;
@@ -16,6 +16,11 @@ public class OrthoCamera {
         viewMatrix = new Matrix4f();
         viewProjectionMatrix = projectionMatrix.mul(viewMatrix);
         position = new Vector3f();
+    }
+    
+    public void setProjection(float left, float right, float bottom, float top) {
+        projectionMatrix = new Matrix4f().ortho(left, right, bottom, top, -1, 1);
+        viewProjectionMatrix = projectionMatrix.mul(viewMatrix);
     }
     
     public void setPosition(Vector3f position) { 

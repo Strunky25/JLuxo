@@ -11,10 +11,14 @@ public abstract class RendererAPI {
         OPENGL
     }
     
+    public abstract void init();
+    
     public abstract void setClearColor(Vector4f color);
     public abstract void clear();
     
     public abstract void drawIndexed(VertexArray vertexArray);
+    
+    public abstract void setViewport(int x, int y, int width, int height);
 
     public static API getAPI() { return api; }
 }

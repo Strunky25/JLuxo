@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import luxo.Log;
+import luxo.core.Bindable;
 import platform.opengl.OpenGLBuffer.*;
 import static org.lwjgl.opengl.GL20C.*;
 
-public interface Buffer {
+public interface Buffer extends Bindable {
     
     public void dispose();
-    public void bind();
-    public void unbind();
       
     public static interface VertexBuffer extends Buffer {
         public static VertexBuffer create(float[] vertices) {

@@ -36,7 +36,7 @@ public class ImGuiLayer extends Layer {
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);    // Enable Multi-Viewport / Platform Windows
         io.setConfigViewportsNoTaskBarIcon(true);
         
-        implGLFW.init(window, true);
+        implGLFW.init(window, false);
         implOpenGL.init("#version 410");
     }
 

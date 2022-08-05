@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL41C.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class OpenGLContext extends GraphicsContext {
+public class OpenGLContext implements GraphicsContext {
     
     private final long windowHandle;
     

@@ -1,9 +1,8 @@
 package luxo;
 
-import luxo.core.Timestep;
-import luxo.events.Event;
+import luxo.core.Element;
 
-public abstract class Layer {
+public abstract class Layer implements Element {
     
     private final String debugName;
     
@@ -13,10 +12,6 @@ public abstract class Layer {
     
     public abstract void onAttach();
     public abstract void onDetach();
-    public abstract void onUpdate(Timestep ts);
-    public abstract void onImGuiRender();
-    public abstract void onEvent(Event event);
-    public abstract void dispose();
     
     public final String getName() { return this.debugName; }
 }

@@ -22,14 +22,25 @@ public class OpenGLTexture2D extends Texture2D {
         Log.coreAssert(data != null, "Failed to load image!");
         width = tempWidth.get();
         height = tempHeight.get();
+        
+        int internalFormat, dataFormat, channels = components.get();
+        if(channels == 4){
+            internalFormat = GL_RGBA8;
+            dataFormat = GL_RGBA;
+        } else {
+            internalFormat = GL_RGB8;
+            dataFormat = GL_RGB;
+        }
+        Log.coreAssert((internalFormat & dataFormat) != 0, "Format not supported!");
+        
         rendererID = glCreateTextures(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, rendererID);
-        glTextureStorage2D(rendererID, 1, GL_RGB8, width, height);
+        glTextureStorage2D(rendererID, 1, internalFormat, width, height);
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         
-        glTextureSubImage2D(rendererID, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTextureSubImage2D(rendererID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, data);
         stbi_image_free(data);
     }
 

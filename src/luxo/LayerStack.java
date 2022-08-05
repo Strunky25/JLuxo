@@ -2,9 +2,10 @@ package luxo;
 
 import luxo.events.Event;
 import java.util.ArrayList;
+import luxo.core.Element;
 import luxo.core.Timestep;
 
-public class LayerStack {
+public class LayerStack implements Element {
     
     private final ArrayList<Layer> layers;
     private int layerInsert;
@@ -25,10 +26,13 @@ public class LayerStack {
     }
     public void popOverlay(Layer overlay) { layers.remove(overlay); }
     
+    @Override
     public void onUpdate(Timestep ts) { layers.forEach(((layer) -> layer.onUpdate(ts))); }
     
+    @Override
     public void onImGuiRender() { layers.forEach(((layer) -> layer.onImGuiRender())); } 
 
+    @Override
     public void onEvent(Event event) {
         for(Layer layer: layers) {
             layer.onEvent(event);
@@ -36,5 +40,6 @@ public class LayerStack {
         }
     }
     
+    @Override
     public void dispose() { layers.forEach(((layer) -> layer.dispose())); }
 }

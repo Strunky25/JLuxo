@@ -20,7 +20,10 @@ public abstract class ApplicationEvent extends Event {
         @Override
         public String getName() {
             return "WindowResizedEvent: " + width + ", " + height;
-        }    
+        }
+        
+        public int getWidth() { return this.width; }
+        public int getHeight() { return this.height; }
     }
     
     public static class WindowClosedEvent extends ApplicationEvent {

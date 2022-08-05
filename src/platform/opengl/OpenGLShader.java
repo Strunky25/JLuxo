@@ -1,56 +1,41 @@
 package platform.opengl;
 
+import java.io.IOException;
 import luxo.Log;
 import luxo.renderer.Shader;
 import java.nio.FloatBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.joml.*;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.opengl.GL46C.*;
 
-public class OpenGLShader implements Shader {
+public class OpenGLShader extends Shader {
     
     private int rendererID;
+    private String name;
+    
+    public OpenGLShader(String filepath) {
+        List<String> source = readFile(filepath);
+        Map<Integer, String> shaderSources = preProcess(source);
+        compile(shaderSources);
+        
+        int lastSlash = filepath.lastIndexOf('/');
+        lastSlash = lastSlash == -1 ? 0 : lastSlash + 1;
+        int lastDot = filepath.lastIndexOf(".");
+        lastDot = lastDot == -1 ? filepath.length() : lastDot;
+        this.name = filepath.substring(lastSlash, lastDot);
+    }
 
-    public OpenGLShader(String vertexSource, String fragmentSource) {
-        int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, vertexSource);
-        glCompileShader(vertexShader);
-        if(glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) {
-            Log.coreError("Vertex Shader compilation failure!");
-            Log.coreAssert(false, glGetShaderInfoLog(vertexShader));
-                        
-            glDeleteShader(vertexShader);
-            return;
-        }
-        
-        int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, fragmentSource);
-        glCompileShader(fragmentShader);
-        if(glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) {
-            Log.coreError("Fragment Shader compilation failure!");
-            Log.coreAssert(false, glGetShaderInfoLog(fragmentShader));
-              
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
-            return;
-        }
-        
-        rendererID = glCreateProgram();
-        glAttachShader(rendererID, vertexShader);
-        glAttachShader(rendererID, fragmentShader);
-        glLinkProgram(rendererID);
-        if(glGetProgrami(rendererID, GL_LINK_STATUS) == GL_FALSE) {
-            Log.coreError("Shader Linking failure!");
-            Log.coreAssert(false, glGetProgramInfoLog(rendererID));
-              
-            glDeleteProgram(rendererID);
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
-            return;
-        }
-        
-        glDetachShader(rendererID, vertexShader);
-        glDetachShader(rendererID, fragmentShader );
+    public OpenGLShader(String name, String vertexSource, String fragmentSource) {
+        this.name = name;
+        HashMap<Integer, String> shaderSources = new HashMap<>();
+        shaderSources.put(GL_VERTEX_SHADER, vertexSource);
+        shaderSources.put(GL_FRAGMENT_SHADER, fragmentSource);
+        compile(shaderSources);
     }
     
     @Override
@@ -61,7 +46,10 @@ public class OpenGLShader implements Shader {
     
     @Override
     public void unbind() { glUseProgram(0); }
-    
+
+    @Override
+    public String getName() { return name; }
+       
     public void uploadUniformMat4(final String name, final Matrix4f uniform) {
         int location = glGetUniformLocation(rendererID, name);
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -89,6 +77,76 @@ public class OpenGLShader implements Shader {
     public void uploadUniformInt(final String name, final int uniform) {
         int location = glGetUniformLocation(rendererID, name);
         glUniform1i(location, uniform);
+    }
+    
+    private List<String> readFile(String filepath) {
+        List<String> result = null;
+        try {
+             result = Files.readAllLines(Paths.get(filepath));
+        } catch (IOException ex) {
+            Log.coreError("Could not open file '%s'", filepath);
+        }
+        return result;
+    }
+    
+    private Map<Integer, String> preProcess(final List<String> source) {
+        HashMap<Integer, String> shaderSources = new HashMap<>();
+        final String typeToken = "#type";
+        String src = new String();
+        int type = -1;
+        boolean isFirst = true;
+        for(String line: source) {
+            if(line.contains(typeToken)) {
+                if(!isFirst) shaderSources.put(type, src); 
+                int pos = line.indexOf(typeToken);
+                type = shaderTypeFromString(line.substring(pos + typeToken.length() + 1));
+                isFirst = false;
+                src = "";
+            } else {
+                src += line + "\n";
+            }
+        }
+        shaderSources.put(type, src);
+        return shaderSources;
+    }
+    
+    private void compile(Map<Integer, String> shaderSources) {
+        int program = glCreateProgram(), i = 0;
+        int[] shaderID = new int[shaderSources.size()];
+        for (Map.Entry<Integer, String> entry : shaderSources.entrySet()) {
+            int shader = glCreateShader(entry.getKey());
+            shaderID[i++] = shader;
+            glShaderSource(shader, entry.getValue());
+            glCompileShader(shader);
+            if(glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+                String infoLog = glGetShaderInfoLog(shader);
+                glDeleteShader(shader);
+                Log.coreError("Shader compilation failure! \n  %s", infoLog);
+                break;
+            }
+            glAttachShader(program, shader);
+        }
+
+        glLinkProgram(program);
+        if(glGetProgrami(program, GL_LINK_STATUS) == GL_FALSE) {
+            String infoLog = glGetProgramInfoLog(program);
+            Log.coreError("Shader Linking failure! \n  %s", infoLog);
+              
+            glDeleteProgram(program);
+            for(int shader: shaderID) glDeleteShader(shader);
+            return;
+        }
+        for(int shader: shaderID) glDetachShader(program, shader);
+        this.rendererID = program;
+    }
+    
+    private static int shaderTypeFromString(final String type) {
+        if("vertex".equals(type))
+            return GL_VERTEX_SHADER;
+        if("fragment".equals(type) || "pixel".equals(type))
+            return GL_FRAGMENT_SHADER;
+        Log.coreAssert(false, "Unknown shader type!");
+        return 0;
     }
 }
 
