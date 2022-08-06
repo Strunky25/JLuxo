@@ -1,4 +1,4 @@
-package luxo;
+package luxo.core;
 
 import luxo.events.Event;
 import java.util.ArrayList;
@@ -40,6 +40,5 @@ public class LayerStack implements Element {
         }
     }
     
-    @Override
-    public void dispose() { layers.forEach(((layer) -> layer.dispose())); }
+    public void dispose() { layers.forEach(((layer) -> layer.onDetach())); }
 }

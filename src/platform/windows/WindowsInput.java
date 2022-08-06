@@ -1,7 +1,7 @@
 package platform.windows;
 
-import luxo.Application;
-import luxo.Input;
+import luxo.core.Application;
+import luxo.core.Input;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class WindowsInput extends Input {

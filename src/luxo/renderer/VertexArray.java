@@ -1,7 +1,7 @@
 package luxo.renderer;
 
 import java.util.ArrayList;
-import luxo.Log;
+import luxo.core.Log;
 import luxo.core.Bindable;
 import luxo.renderer.Buffer.IndexBuffer;
 import luxo.renderer.Buffer.VertexBuffer;

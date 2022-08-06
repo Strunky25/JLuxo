@@ -1,7 +1,7 @@
 package platform.opengl;
 
 import java.util.ArrayList;
-import luxo.Log;
+import luxo.core.Log;
 import luxo.renderer.Buffer;
 import luxo.renderer.Buffer.BufferLayout;
 import luxo.renderer.Buffer.IndexBuffer;

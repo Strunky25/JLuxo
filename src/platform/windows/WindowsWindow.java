@@ -1,7 +1,7 @@
 package platform.windows;
 
-import luxo.Log;
-import luxo.Window;
+import luxo.core.Log;
+import luxo.core.Window;
 import luxo.events.ApplicationEvent.*;
 import luxo.events.Event.EventCallback;
 import luxo.events.KeyEvent;
@@ -53,9 +53,7 @@ public class WindowsWindow extends Window {
         
         context = new OpenGLContext(window);
         context.init();
-        
-        setVSync(true);
-        
+              
         glfwSetWindowSizeCallback(window, (long win, int width, int height) -> {
            WindowResizedEvent event = new WindowResizedEvent(width, height);
            data.width = width;

@@ -1,4 +1,4 @@
-package luxo;
+package luxo.core;
 
 import luxo.events.Event.EventCallback;
 

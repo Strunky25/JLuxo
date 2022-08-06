@@ -17,11 +17,11 @@ void main() {
 #type fragment
 #version 330 core
 
-uniform vec3 col;
+uniform vec4 col;
 
 in vec3 v_pos;
 out vec4 color;
 
 void main() {
-    color = vec4(col, 1.0);
+    color = col;
 }

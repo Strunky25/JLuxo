@@ -1,8 +1,9 @@
 package luxo.renderer;
 
 import java.util.HashMap;
-import luxo.Log;
+import luxo.core.Log;
 import luxo.core.Bindable;
+import org.joml.*;
 import platform.opengl.OpenGLShader;
 
 public abstract class Shader implements Bindable {
@@ -28,6 +29,15 @@ public abstract class Shader implements Bindable {
         Log.coreAssert(false, "Unknown RendererAPI!");
         return null;
     }
+    
+    public abstract void setMat4(final String name, final Matrix4f uniform);
+    
+    public abstract void setVec4(final String name, final Vector4f uniform);
+    
+    public abstract void setVec3(final String name, final Vector3f uniform);
+    
+    public abstract void setInt(final String name, final int uniform);
+    
     
     public static class ShaderLibrary {
         
@@ -64,5 +74,6 @@ public abstract class Shader implements Bindable {
         public void dispose() {
             shaders.values().forEach(shader -> { shader.dispose(); });
         }
+        
     }
 }

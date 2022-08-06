@@ -1,6 +1,4 @@
-package luxo;
-
-import luxo.core.Element;
+package luxo.core;
 
 public abstract class Layer implements Element {
     

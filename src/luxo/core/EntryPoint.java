@@ -1,4 +1,4 @@
-package luxo;
+package luxo.core;
 
 import sandbox.Sandbox;
 import platform.windows.WindowsInput;

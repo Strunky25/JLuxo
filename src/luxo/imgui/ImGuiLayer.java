@@ -1,8 +1,8 @@
 package luxo.imgui;
 
-import luxo.Application;
+import luxo.core.Application;
 import luxo.events.Event;
-import luxo.Layer;
+import luxo.core.Layer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
@@ -80,9 +80,4 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {}
-
-    @Override
-    public void dispose() {
-        onDetach();
-    }
 }

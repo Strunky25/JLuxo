@@ -15,5 +15,4 @@ public interface Element {
     public void onUpdate(Timestep ts);
     public void onEvent(Event event);
     public void onImGuiRender();
-    public void dispose();
 }

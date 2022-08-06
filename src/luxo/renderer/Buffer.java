@@ -3,7 +3,7 @@ package luxo.renderer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import luxo.Log;
+import luxo.core.Log;
 import luxo.core.Bindable;
 import platform.opengl.OpenGLBuffer.*;
 import static org.lwjgl.opengl.GL20C.*;

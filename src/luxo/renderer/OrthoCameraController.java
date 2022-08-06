@@ -1,12 +1,12 @@
-package luxo;
+package luxo.renderer;
 
+import luxo.core.Input;
 import luxo.core.Element;
 import luxo.core.Timestep;
 import luxo.events.ApplicationEvent.WindowResizedEvent;
 import luxo.events.Event;
 import luxo.events.MouseEvent.MouseScrolledEvent;
-import luxo.renderer.OrthoCamera;
-import static luxo.KeyCode.*;
+import static luxo.core.KeyCode.*;
 import org.joml.Vector3f;
 
 public class OrthoCameraController implements Element {
@@ -81,15 +81,12 @@ public class OrthoCameraController implements Element {
     }
     
     private boolean onWindowResized(WindowResizedEvent evt) {
-        this.aspectRatio = (float) evt.getWidth() / (float) evt.getHeight();
+        setAspectRatio((float) evt.getWidth() / (float) evt.getHeight());
         return false;
     }
 
     @Override
     public void onImGuiRender() {}
-
-    @Override
-    public void dispose() {}
     
     public OrthoCamera getCamera() { return this.camera; }
 }

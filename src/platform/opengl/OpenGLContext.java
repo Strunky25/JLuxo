@@ -1,6 +1,6 @@
 package platform.opengl;
 
-import luxo.Log;
+import luxo.core.Log;
 import luxo.renderer.GraphicsContext;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL41C.*;

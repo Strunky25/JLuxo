@@ -1,10 +1,10 @@
 package sandbox;
 
-import luxo.Application;
-import luxo.OrthoCameraController;
+import luxo.core.Application;
+import luxo.renderer.OrthoCameraController;
 import luxo.core.Timestep;
 import luxo.events.Event;
-import luxo.Layer;
+import luxo.core.Layer;
 import luxo.renderer.*;
 import luxo.renderer.Shader.ShaderLibrary;
 import luxo.renderer.Texture.Texture2D;
@@ -58,11 +58,14 @@ public class Sandbox extends Application {
             texture2 = Texture2D.create("assets/textures/ChernoLogo.png");
         
             textureShader.bind();
-            ((OpenGLShader) textureShader).uploadUniformInt("tex", 0);
+            textureShader.setInt("tex", 0);
         }
 
         @Override
-        public void onDetach() {}
+        public void onDetach() {
+            shaderLibrary.dispose();
+            squareVA.dispose();
+        }
 
         @Override
         public void onUpdate(Timestep ts) {                            
@@ -78,7 +81,7 @@ public class Sandbox extends Application {
             for (int i = 0; i < 20; i++) {
                 for (int j = 0; j < 20; j++) {
                     Vector3f pos = new Vector3f(i * 0.11f, j * 0.11f, 0);
-                    ((OpenGLShader) flatColorShader).uploadUniformVec3("col", new Vector3f(squareCol));
+                    flatColorShader.setVec3("col", new Vector3f(squareCol));
                     Renderer.submit(flatColorShader, squareVA, new Matrix4f().translate(pos).scale(0.1f));
                 }
             }
@@ -111,13 +114,10 @@ public class Sandbox extends Application {
             //Event.EventDispatcher dispatcher = new Event.EventDispatcher(event);
             //dispatcher.dispatch(KeyPressedEvent.class, this::onKeyPressedEvent);
         }
-
-        @Override
-        public void dispose() {
-            shaderLibrary.dispose();
-            squareVA.dispose();
-        }
     }
     
-    public Sandbox() { pushLayer(new ExampleLayer()); }
+    public Sandbox() { 
+        // pushLayer(new ExampleLayer()); 
+        pushLayer(new Sandbox2D());
+    }
 }

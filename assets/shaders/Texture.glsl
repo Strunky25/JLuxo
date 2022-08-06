@@ -19,11 +19,12 @@ void main() {
 #version 330 core
 
 uniform sampler2D tex;
+uniform vec4 col;
 
 in vec2 texCord;
 
 out vec4 color;
 
 void main() {
-    color = texture(tex, texCord);
+    color = texture(tex, texCord * 10) * col;
 }

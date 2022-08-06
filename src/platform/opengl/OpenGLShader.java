@@ -1,7 +1,7 @@
 package platform.opengl;
 
 import java.io.IOException;
-import luxo.Log;
+import luxo.core.Log;
 import luxo.renderer.Shader;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
@@ -46,11 +46,31 @@ public class OpenGLShader extends Shader {
     
     @Override
     public void unbind() { glUseProgram(0); }
+    
+    @Override
+    public void setMat4(String name, Matrix4f uniform) {
+        uploadUniformMat4(name, uniform);
+    }
+
+    @Override
+    public void setVec4(String name, Vector4f uniform) {
+        uploadUniformVec4(name, uniform);
+    }
+
+    @Override
+    public void setVec3(String name, Vector3f uniform) {
+        uploadUniformVec3(name, uniform);
+    }
+
+    @Override
+    public void setInt(String name, int uniform) {
+        uploadUniformInt(name, uniform);
+    }
 
     @Override
     public String getName() { return name; }
        
-    public void uploadUniformMat4(final String name, final Matrix4f uniform) {
+    private void uploadUniformMat4(final String name, final Matrix4f uniform) {
         int location = glGetUniformLocation(rendererID, name);
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer fb = uniform.get(stack.mallocFloat(16));
@@ -58,7 +78,7 @@ public class OpenGLShader extends Shader {
         }
     }
     
-    public void uploadUniformVec4(final String name, final Vector4f uniform) {
+    private void uploadUniformVec4(final String name, final Vector4f uniform) {
         int location = glGetUniformLocation(rendererID, name);
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer fb = uniform.get(stack.mallocFloat(4));
@@ -66,7 +86,7 @@ public class OpenGLShader extends Shader {
         }
     }
     
-    public void uploadUniformVec3(final String name, final Vector3f uniform) {
+    private void uploadUniformVec3(final String name, final Vector3f uniform) {
         int location = glGetUniformLocation(rendererID, name);
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer fb = uniform.get(stack.mallocFloat(3));
@@ -74,7 +94,7 @@ public class OpenGLShader extends Shader {
         }
     }
     
-    public void uploadUniformInt(final String name, final int uniform) {
+    private void uploadUniformInt(final String name, final int uniform) {
         int location = glGetUniformLocation(rendererID, name);
         glUniform1i(location, uniform);
     }

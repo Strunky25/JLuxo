@@ -1,7 +1,6 @@
-package luxo;
+package luxo.core;
 
-import luxo.Window.WindowProperties;
-import luxo.core.Timestep;
+import luxo.core.Window.WindowProperties;
 import luxo.events.ApplicationEvent.*;
 import luxo.events.Event;
 import luxo.imgui.ImGuiLayer;
@@ -26,6 +25,7 @@ public abstract class Application {
         running = true;
         
         window = new WindowsWindow(new WindowProperties());
+        window.setVSync(false);
         window.setEventCallback(this::onEvent);
         
         Renderer.init();
